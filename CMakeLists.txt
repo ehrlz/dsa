@@ -5,11 +5,9 @@ project(dsa VERSION 0.1.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-set(SOURCE_FILES
-		main.c
-)
+# Habilitar CTest para poder ejecutar 'make test' o 'ctest'
+enable_testing()
 
-add_executable(dsa ${SOURCE_FILES})
-
-target_include_directories(dsa PRIVATE include)
-
+# Añadir las subcarpetas
+add_subdirectory(lib)
+add_subdirectory(test)
