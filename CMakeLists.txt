@@ -1,15 +1,19 @@
 cmake_minimum_required(VERSION 3.20)
+project(dsa)
 
-project(dsa VERSION 0.1.0 LANGUAGES C)
-
-set(CMAKE_C_STANDARD 23)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 23)
+set(CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Habilitar CTest para poder ejecutar 'make test' o 'ctest'
-enable_testing()
+add_library(dsa INTERFACE)
+target_include_directories(
+	dsa INTERFACE
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
-# Añadir las subcarpetas
-add_subdirectory(lib)
-add_subdirectory(test)
+if(BUILD_TESTING)
+	enable_testing()
+	add_subdirectory(tests)
+endif()
+
