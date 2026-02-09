@@ -1,7 +1,9 @@
+#pragma once
+
 #include <cstddef>
 #include <cstdlib>
 
-namespace sda
+namespace dsa
 {
 
 template<typename T> class Vector
@@ -9,10 +11,18 @@ template<typename T> class Vector
 
 public:
 
-	Vector(std::size_t size_)
-		: size(size_)
+	Vector()
+		: size_(0uz)
+		, capacity_(50uz)
 	{
-		data = malloc(size);
+		data = malloc(capacity_ * sizeof(T));
+	}
+
+	Vector(std::size_t size, T element)
+		: size_(size)
+		, capacity_(size_ * 2)
+	{
+		data = malloc(capacity_ * sizeof(T));
 	}
 
 	~Vector()
@@ -20,10 +30,20 @@ public:
 		free(data);
 	}
 
+	std::size_t size() const
+	{
+		return size_;
+	}
+
+	std::size_t capacity() const
+	{
+		return capacity_;
+	}
+
 private:
-	void *data;					// data stored in the heap
-	std::size_t size;			// actual elements
-	std::size_t capacity; // max reserved capacity
+	void *data;						// data stored in the heap
+	std::size_t size_;			// actual elements
+	std::size_t capacity_; // max reserved capacity
 };
 
 }
