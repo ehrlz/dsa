@@ -15,14 +15,14 @@ public:
 		: size_(0uz)
 		, capacity_(50uz)
 	{
-		data = malloc(capacity_ * sizeof(T));
+		data = static_cast<T*>(malloc(capacity_ * sizeof(T)));
 	}
 
 	Vector(std::size_t size, T element)
 		: size_(size)
 		, capacity_(size_ * 2)
 	{
-		data = malloc(capacity_ * sizeof(T));
+		data = static_cast<T*>(malloc(capacity_ * sizeof(T)));
 	}
 
 	~Vector()
@@ -40,10 +40,27 @@ public:
 		return capacity_;
 	}
 
+	void reserve(std::size_t size)
+	{
+		if (size <= size_)
+		{
+			return;
+		}
+
+		T *new_data = static_cast<T*>(malloc(size * sizeof(T)));
+		for(auto idx{0uz}; idx < size_; ++idx)
+		{
+			new_data[idx] = data[idx];
+		}
+		capacity_ = size;
+		free(data);
+		data = new_data;
+	}
+
 private:
-	void *data;						// data stored in the heap
+	T *data;							// data stored in the heap
 	std::size_t size_;			// actual elements
-	std::size_t capacity_; // max reserved capacity
+	std::size_t capacity_;	// max reserved capacity
 };
 
 }
