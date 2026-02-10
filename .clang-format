@@ -1,0 +1,8 @@
+BasedOnStyle: Microsoft
+BinPackArguments: false
+BinPackParameters: false
+BreakConstructorInitializers: BeforeComma
+IncludeBlocks: Regroup
+InsertBraces: true
+PackConstructorInitializers: NextLineOnly
+PointerAlignment: Left
