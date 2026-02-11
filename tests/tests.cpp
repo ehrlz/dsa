@@ -1,6 +1,7 @@
 #include "vector.h"
 
 #include <gtest/gtest.h>
+#include <utility>
 
 TEST(tests, vector_constructor)
 {
@@ -34,6 +35,20 @@ TEST(tests, vector_copy_asignment)
         << "vector copy operator is not copying the vector capacity correctly";
     EXPECT_EQ(vector.at(0), 1) << "vector copy constructor is not copying correctly";
     EXPECT_EQ(copied_vector.at(0), 2) << "vector copy constructor is not copying correctly";
+}
+
+TEST(tests, vector_move_ctor)
+{
+    dsa::Vector<int> vector;
+    vector.push_back(1);
+
+    const int* original_data_address = &vector.at(0);
+
+    dsa::Vector<int> moved_vector(std::move(vector));
+    EXPECT_EQ(&moved_vector.at(0), original_data_address) << "vector move ctor is not moving the data";
+
+    EXPECT_EQ(vector.size(), 0) << "old vector hasn't been cleaned";
+    EXPECT_EQ(vector.capacity(), 0) << "old vector hasn't been cleaned";
 }
 
 TEST(tests, vector_reserve)

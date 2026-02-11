@@ -30,11 +30,11 @@ template <typename T> class Vector
     }
 
     Vector(const Vector& other_vector)
-        : size_(other_vector.size()), capacity_(other_vector.capacity()), data_(nullptr)
+        : size_(other_vector.size_), capacity_(other_vector.capacity_), data_(nullptr)
     {
         data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
 
-        for (auto idx{0uz}; idx < other_vector.size(); ++idx)
+        for (auto idx{0uz}; idx < other_vector.size_; ++idx)
         {
             data_[idx] = other_vector.at(idx);
         }
@@ -42,18 +42,25 @@ template <typename T> class Vector
 
     Vector& operator=(const Vector& other_vector)
     {
-        size_ = other_vector.size();
-        capacity_ = other_vector.capacity();
+        size_ = other_vector.size_;
+        capacity_ = other_vector.capacity_;
         data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
-        for (auto idx{0uz}; idx < other_vector.size(); ++idx)
+        for (auto idx{0uz}; idx < other_vector.size_; ++idx)
         {
             data_[idx] = other_vector.at(idx);
         }
     }
 
-    // TODO move constructor
+    Vector(Vector&& other_vector) noexcept
+        : size_(other_vector.size_), capacity_(other_vector.capacity_), data_(other_vector.data_)
+    {
+        // Nullify. Other case the old object will delete the moved mem. direction
+        other_vector.data_ = nullptr;
+        other_vector.size_ = 0;
+        other_vector.capacity_ = 0;
+    }
+
     // TODO move assignment
-    Vector(Vector&&) = delete;
     Vector& operator=(Vector&&) = delete;
 
     // Returns the number of elements in the vector
