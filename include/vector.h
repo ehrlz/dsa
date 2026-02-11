@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <new>
 #include <stdexcept>
-#include <type_traits>
 #include <utility>
 
 namespace dsa
@@ -110,7 +109,7 @@ template <typename T> class Vector
         {
             try
             {
-                new (new_data + idx) T(std::move(data_[idx]));
+                new (new_data + idx) T(std::move_if_noexcept(data_[idx]));
             }
             catch (...)
             {
