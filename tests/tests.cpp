@@ -9,6 +9,33 @@ TEST(tests, vector_constructor)
     EXPECT_GT(vector.capacity(), vector.size()) << "vector capacity shall be greater than size at construction";
 }
 
+TEST(tests, vector_copy_constructor)
+{
+    dsa::Vector<int> vector;
+    vector.push_back(1);
+    dsa::Vector<int> copied_vector(vector);
+    copied_vector.at(0) = 2;
+    EXPECT_EQ(copied_vector.size(), vector.size())
+        << "vector copy constructor is not copying the vector size correctly";
+    EXPECT_EQ(copied_vector.capacity(), vector.capacity())
+        << "vector copy constructor is not copying the vector capacity correctly";
+    EXPECT_EQ(vector.at(0), 1) << "vector copy constructor is not copying correctly";
+    EXPECT_EQ(copied_vector.at(0), 2) << "vector copy constructor is not copying correctly";
+}
+
+TEST(tests, vector_copy_asignment)
+{
+    dsa::Vector<int> vector;
+    vector.push_back(1);
+    dsa::Vector<int> copied_vector = vector;
+    copied_vector.at(0) = 2;
+    EXPECT_EQ(copied_vector.size(), vector.size()) << "vector copy operator is not copying the vector size correctly";
+    EXPECT_EQ(copied_vector.capacity(), vector.capacity())
+        << "vector copy operator is not copying the vector capacity correctly";
+    EXPECT_EQ(vector.at(0), 1) << "vector copy constructor is not copying correctly";
+    EXPECT_EQ(copied_vector.at(0), 2) << "vector copy constructor is not copying correctly";
+}
+
 TEST(tests, vector_reserve)
 {
     dsa::Vector<int> vector;

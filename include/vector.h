@@ -29,12 +29,30 @@ template <typename T> class Vector
         data_ = nullptr;
     }
 
-    // TODO copy constructor
-    // TODO copy assignment
+    Vector(const Vector& other_vector)
+        : size_(other_vector.size()), capacity_(other_vector.capacity()), data_(nullptr)
+    {
+        data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
+
+        for (auto idx{0uz}; idx < other_vector.size(); ++idx)
+        {
+            data_[idx] = other_vector.at(idx);
+        }
+    }
+
+    Vector& operator=(const Vector& other_vector)
+    {
+        size_ = other_vector.size();
+        capacity_ = other_vector.capacity();
+        data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
+        for (auto idx{0uz}; idx < other_vector.size(); ++idx)
+        {
+            data_[idx] = other_vector.at(idx);
+        }
+    }
+
     // TODO move constructor
     // TODO move assignment
-    Vector(const Vector&) = delete;
-    Vector& operator=(const Vector&) = delete;
     Vector(Vector&&) = delete;
     Vector& operator=(Vector&&) = delete;
 
