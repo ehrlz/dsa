@@ -51,6 +51,17 @@ TEST(tests, vector_push_back_resize)
     EXPECT_EQ(vector.capacity(), 100) << "vector push back doesn't increase the capacity";
 }
 
+TEST(tests, vector_at)
+{
+    dsa::Vector<int> vector;
+    vector.push_back(1);
+    EXPECT_NO_THROW(vector.at(0));
+
+    const int value_to_compare = 10;
+    vector.at(0) = value_to_compare;
+    EXPECT_EQ(vector.at(0), value_to_compare) << "vector at doesn't retrieve a reference";
+}
+
 TEST(tests, vector_at_out_of_bounds)
 {
     dsa::Vector<int> vector;
@@ -58,20 +69,11 @@ TEST(tests, vector_at_out_of_bounds)
     {
         vector.push_back(idx);
     }
-    EXPECT_THROW(vector.at(76), std::invalid_argument)
-        << "vector at doesn't raises an exception accessing out of bounds";
+    EXPECT_THROW(vector.at(76), std::out_of_range) << "vector at doesn't raises an exception accessing out of bounds";
 }
 
 TEST(tests, vector_at_init_out_of_bounds)
 {
     dsa::Vector<int> vector;
-    EXPECT_THROW(vector.at(1), std::invalid_argument)
-        << "vector at doesn't raises an exception accessing out of bounds";
-}
-
-TEST(tests, vector_at)
-{
-    dsa::Vector<int> vector;
-    vector.push_back(1);
-    EXPECT_NO_THROW(vector.at(0));
+    EXPECT_THROW(vector.at(1), std::out_of_range) << "vector at doesn't raises an exception accessing out of bounds";
 }
