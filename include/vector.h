@@ -122,7 +122,16 @@ template <typename T> class Vector
         return data_[idx];
     }
 
-    // TODO implement operator[]
+    // No bounds checking (faster. use at to access with safety)
+    T& operator[](std::size_t idx)
+    {
+        return data_[idx];
+    }
+
+    const T& operator[](std::size_t idx) const
+    {
+        return data_[idx];
+    }
 
   private:
     T* data_;              // data stored in the heap
