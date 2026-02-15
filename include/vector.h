@@ -1,7 +1,9 @@
 #pragma once
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdlib>
+#include <initializer_list>
 #include <new>
 #include <stdexcept>
 #include <utility>
@@ -17,6 +19,15 @@ template <typename T> class Vector
         : size_(0uz), capacity_(50uz), data_(nullptr)
     {
         data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
+    }
+
+    Vector(std::initializer_list<T> init)
+        : size_(0uz), capacity_(50uz), data_(nullptr)
+    {
+        data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
+
+        std::copy(init.begin(), init.end(), data_);
+        size_ = init.size();
     }
 
     ~Vector()
@@ -66,6 +77,23 @@ template <typename T> class Vector
 
         other_vector.nullify();
         return *this;
+    }
+
+    // 2 vectors are consider equal if they have the same size and elements in the same order
+    bool operator==(const Vector& other_vector) const
+    {
+        if (size_ != other_vector.size_)
+        {
+            return false;
+        }
+        for (auto idx{0uz}; idx < size_; ++idx)
+        {
+            if (data_[idx] != other_vector.data_[idx])
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     // Returns the number of elements in the vector

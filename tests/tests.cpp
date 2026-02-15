@@ -10,7 +10,29 @@ TEST(tests, vector_constructor)
     EXPECT_GT(vector.capacity(), vector.size()) << "vector capacity shall be greater than size at construction";
 }
 
-TEST(tests, vector_copy_constructor)
+TEST(tests, vector_init_list_ctor)
+{
+    dsa::Vector<int> vector{1, 2, 3};
+    dsa::Vector<int> expected_vector;
+    expected_vector.push_back(1);
+    expected_vector.push_back(2);
+    expected_vector.push_back(3);
+    EXPECT_EQ(vector, expected_vector) << "vector init ctor is not initializing the values correctly";
+}
+
+TEST(tests, vector_copy_ctor)
+{
+    dsa::Vector<int> vector;
+    vector.push_back(1);
+    dsa::Vector<int> copied_vector(vector);
+    EXPECT_EQ(copied_vector.size(), vector.size())
+        << "vector copy constructor is not copying the vector size correctly";
+    EXPECT_EQ(copied_vector.capacity(), vector.capacity())
+        << "vector copy constructor is not copying the vector capacity correctly";
+    EXPECT_EQ(vector, copied_vector) << "vector copy constructor is not copying correctly";
+}
+
+TEST(tests, vector_copy_ctor_different)
 {
     dsa::Vector<int> vector;
     vector.push_back(1);
@@ -25,6 +47,17 @@ TEST(tests, vector_copy_constructor)
 }
 
 TEST(tests, vector_copy_asignment)
+{
+    dsa::Vector<int> vector;
+    vector.push_back(1);
+    dsa::Vector<int> copied_vector = vector;
+    EXPECT_EQ(copied_vector.size(), vector.size()) << "vector copy operator is not copying the vector size correctly";
+    EXPECT_EQ(copied_vector.capacity(), vector.capacity())
+        << "vector copy operator is not copying the vector capacity correctly";
+    EXPECT_EQ(vector, copied_vector) << "vector copy constructor is not copying correctly";
+}
+
+TEST(tests, vector_copy_asignment_different)
 {
     dsa::Vector<int> vector;
     vector.push_back(1);
@@ -133,4 +166,11 @@ TEST(tests, vector_at_init_out_of_bounds)
 {
     dsa::Vector<int> vector;
     EXPECT_THROW(vector.at(1), std::out_of_range) << "vector at doesn't raises an exception accessing out of bounds";
+}
+
+TEST(tests, vector_equal_op_no_size)
+{
+    dsa::Vector<int> vector;
+    dsa::Vector<int> other_vector;
+    EXPECT_EQ(vector, other_vector) << "vector eq operator is not working properly";
 }
