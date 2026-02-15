@@ -51,6 +51,21 @@ TEST(tests, vector_move_ctor)
     EXPECT_EQ(vector.capacity(), 0) << "old vector hasn't been cleaned";
 }
 
+TEST(tests, vector_move_operator)
+{
+    dsa::Vector<int> vector;
+    vector.push_back(1);
+
+    const int* original_data_address = &vector.at(0);
+
+    dsa::Vector<int> moved_vector;
+    moved_vector = std::move(vector);
+    EXPECT_EQ(&moved_vector.at(0), original_data_address) << "vector move operator is not moving the data";
+
+    EXPECT_EQ(vector.size(), 0) << "old vector hasn't been cleaned";
+    EXPECT_EQ(vector.capacity(), 0) << "old vector hasn't been cleaned";
+}
+
 TEST(tests, vector_reserve)
 {
     dsa::Vector<int> vector;

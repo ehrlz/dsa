@@ -55,13 +55,18 @@ template <typename T> class Vector
         : size_(other_vector.size_), capacity_(other_vector.capacity_), data_(other_vector.data_)
     {
         // Nullify. Other case the old object will delete the moved mem. direction
-        other_vector.data_ = nullptr;
-        other_vector.size_ = 0;
-        other_vector.capacity_ = 0;
+        other_vector.nullify();
     }
 
-    // TODO move assignment
-    Vector& operator=(Vector&&) = delete;
+    Vector& operator=(Vector&& other_vector)
+    {
+        size_ = other_vector.size_;
+        capacity_ = other_vector.capacity_;
+        data_ = other_vector.data_;
+
+        other_vector.nullify();
+        return *this;
+    }
 
     // Returns the number of elements in the vector
     std::size_t size() const
@@ -157,6 +162,13 @@ template <typename T> class Vector
 
         data_ = new_data;
         capacity_ = new_capacity;
+    }
+
+    void nullify()
+    {
+        data_ = nullptr;
+        size_ = 0;
+        capacity_ = 0;
     }
 };
 
