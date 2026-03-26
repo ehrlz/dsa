@@ -13,6 +13,11 @@ target_include_directories(
 
 target_compile_features(dsa INTERFACE cxx_std_23) # Only this library is compiled with C++23
 
+target_compile_options(dsa INTERFACE
+    $<$<CXX_COMPILER_ID:Clang,GNU>:-Wall -Wextra -Wpedantic>
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+)
+
 if(BUILD_TESTING)
 	enable_testing()
 	add_subdirectory(tests)

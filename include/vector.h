@@ -21,12 +21,12 @@ class Vector
 
     // ctors and dtors
     Vector()
-        : size_(0uz), capacity_(0uz), data_(nullptr)
+        : data_(nullptr), size_(0uz), capacity_(0uz)
     {
     }
 
     Vector(std::initializer_list<T> init)
-        : size_(0uz), capacity_(init.size()), data_(nullptr)
+        : data_(nullptr), size_(0uz), capacity_(init.size())
     {
         data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
 
@@ -40,7 +40,7 @@ class Vector
     }
 
     Vector(const Vector& other)
-        : size_(other.size_), capacity_(other.size_), data_(nullptr)
+        : data_(nullptr), size_(other.size_), capacity_(other.size_)
     {
         if (capacity_ > 0)
         {
@@ -60,7 +60,7 @@ class Vector
     }
 
     Vector(Vector&& other) noexcept
-        : size_(0uz), capacity_(0uz), data_(nullptr)
+        : data_(nullptr), size_(0uz), capacity_(0uz)
     {
         swap(other);
     }
