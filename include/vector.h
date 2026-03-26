@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdlib>
 #include <initializer_list>
+#include <memory>
 #include <new>
 #include <stdexcept>
 #include <utility>
@@ -11,73 +12,88 @@
 namespace dsa
 {
 
-template <typename T> class Vector
+template <typename T>
+class Vector
 {
 
   public:
+    // TODO iterator support
+
+    // ctors and dtors
     Vector()
-        : size_(0uz), capacity_(50uz), data_(nullptr)
+        : size_(0uz), capacity_(0uz), data_(nullptr)
     {
-        data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
     }
 
     Vector(std::initializer_list<T> init)
-        : size_(0uz), capacity_(50uz), data_(nullptr)
+        : size_(0uz), capacity_(init.size()), data_(nullptr)
     {
         data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
 
-        std::copy(init.begin(), init.end(), data_);
+        std::uninitialized_copy(init.begin(), init.end(), data_);
         size_ = init.size();
     }
 
     ~Vector()
     {
-        for (auto idx{0uz}; idx < size_; ++idx)
-        {
-            data_[idx].~T();
-        }
-        ::operator delete(data_);
-        data_ = nullptr;
+        clear_memory();
     }
 
-    Vector(const Vector& other_vector)
-        : size_(other_vector.size_), capacity_(other_vector.capacity_), data_(nullptr)
+    Vector(const Vector& other)
+        : size_(other.size_), capacity_(other.size_), data_(nullptr)
     {
-        data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
-
-        for (auto idx{0uz}; idx < other_vector.size_; ++idx)
+        if (capacity_ > 0)
         {
-            data_[idx] = other_vector.at(idx);
+            data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
+            std::uninitialized_copy(other.begin(), other.end(), data_);
         }
     }
 
-    Vector& operator=(const Vector& other_vector)
+    Vector& operator=(const Vector& other)
     {
-        size_ = other_vector.size_;
-        capacity_ = other_vector.capacity_;
-        data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
-        for (auto idx{0uz}; idx < other_vector.size_; ++idx)
+        if (this != &other)
         {
-            data_[idx] = other_vector.at(idx);
+            Vector tmp(other);
+            swap(tmp);
         }
-    }
-
-    Vector(Vector&& other_vector) noexcept
-        : size_(other_vector.size_), capacity_(other_vector.capacity_), data_(other_vector.data_)
-    {
-        // Nullify. Other case the old object will delete the moved mem. direction
-        other_vector.nullify();
-    }
-
-    Vector& operator=(Vector&& other_vector)
-    {
-        size_ = other_vector.size_;
-        capacity_ = other_vector.capacity_;
-        data_ = other_vector.data_;
-
-        other_vector.nullify();
         return *this;
     }
+
+    Vector(Vector&& other) noexcept
+        : size_(0uz), capacity_(0uz), data_(nullptr)
+    {
+        swap(other);
+    }
+
+    Vector& operator=(Vector&& other)
+    {
+        if (this != &other)
+        {
+            // other holds our data and destroys it at out of scope
+            swap(other);
+        }
+        return *this;
+    }
+
+    // iterators
+    T* begin() noexcept
+    {
+        return data_;
+    }
+    T* end() noexcept
+    {
+        return data_ + size_;
+    }
+    const T* begin() const noexcept
+    {
+        return data_;
+    }
+    const T* end() const noexcept
+    {
+        return data_ + size_;
+    }
+
+    // operators
 
     // 2 vectors are consider equal if they have the same size and elements in the same order
     bool operator==(const Vector& other_vector) const
@@ -96,14 +112,12 @@ template <typename T> class Vector
         return true;
     }
 
-    // Returns the number of elements in the vector
-    std::size_t size() const
+    std::size_t size() const noexcept
     {
         return size_;
     }
 
-    // Returns the number of elements that could fit in the reserved memory
-    std::size_t capacity() const
+    std::size_t capacity() const noexcept
     {
         return capacity_;
     }
@@ -119,18 +133,32 @@ template <typename T> class Vector
         reallocate(new_capacity);
     }
 
-    // Adds the element at the end of the list
-    template <typename U> void push_back(U&& elem)
+    void push_back(const T& elem)
+    {
+        emplace_back(elem);
+    }
+
+    void push_back(T&& elem)
+    {
+        emplace_back(std::move(elem));
+    }
+
+    // Variadic template for constructing in place
+    template <typename... Args>
+    T& emplace_back(Args&&... args)
     {
         if (size_ == capacity_) // reallocation needed
         {
-            reallocate(size_ * 2);
+            std::size_t new_cap = capacity_ == 0 ? 1 : size_ * 2;
+            reallocate(new_cap);
         }
-        new (data_ + size_) T(std::forward<U>(elem));
+
+        T* ptr = std::construct_at(data_ + size_, std::forward<Args>(args)...);
         size_++;
+        return *ptr;
     }
 
-    // Access an element of the list
+    // accesses
     T& at(std::size_t idx)
     {
         if (idx >= size_)
@@ -140,7 +168,6 @@ template <typename T> class Vector
         return data_[idx];
     }
 
-    // Const access an element of the list
     const T& at(std::size_t idx) const
     {
         if (idx >= size_)
@@ -165,6 +192,13 @@ template <typename T> class Vector
     T* data_;              // data stored in the heap
     std::size_t size_;     // actual elements
     std::size_t capacity_; // max reserved capacity
+
+    void swap(Vector& other) noexcept
+    {
+        std::swap(size_, other.size_);
+        std::swap(capacity_, other.capacity_);
+        std::swap(data_, other.data_);
+    }
 
     void reallocate(std::size_t new_capacity)
     {
@@ -201,11 +235,13 @@ template <typename T> class Vector
         capacity_ = new_capacity;
     }
 
-    void nullify()
+    void clear_memory()
     {
-        data_ = nullptr;
-        size_ = 0;
-        capacity_ = 0;
+        if (data_)
+        {
+            std::destroy_n(data_, size_);
+            ::operator delete(data_);
+        }
     }
 };
 

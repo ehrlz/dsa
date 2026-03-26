@@ -6,3 +6,4 @@ IncludeBlocks: Regroup
 InsertBraces: true
 PackConstructorInitializers: NextLineOnly
 PointerAlignment: Left
+AlwaysBreakTemplateDeclarations: Yes

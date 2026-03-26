@@ -7,7 +7,7 @@ TEST(tests, vector_constructor)
 {
     dsa::Vector<int> vector;
     EXPECT_EQ(vector.size(), 0uz) << "vector is not empty at construction";
-    EXPECT_GT(vector.capacity(), vector.size()) << "vector capacity shall be greater than size at construction";
+    EXPECT_EQ(vector.capacity(), 0uz) << "vector capacity shall be 0 at construction";
 }
 
 TEST(tests, vector_init_list_ctor)
@@ -138,7 +138,7 @@ TEST(tests, vector_push_back_resize)
         vector.push_back(idx);
     }
     EXPECT_EQ(vector.size(), 75) << "vector push back doesn't increase the size properly";
-    EXPECT_EQ(vector.capacity(), 100) << "vector push back doesn't increase the capacity";
+    EXPECT_EQ(vector.capacity(), 128) << "vector push back doesn't increase the capacity";
 }
 
 TEST(tests, vector_at)
