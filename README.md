@@ -5,14 +5,19 @@ This repository started following the idea to explore the implementation and con
 
 There are some personal preferences and designs that doesn't pretend to be useful for others.
 
-## Building
-```
-cmake -DCMAKE_CXX_COMPILER=clang++ -DBUILD_TESTING=true -B build 
-```
-> Use `-DBUILD_TESTING=true` for building tests
 
+## Building
+
+Configure and build:
+```bash
+cmake --preset debug    # debug + sanitizers + tests
+cmake --preset release  # optimized
 ```
-cmake --build build
+
+Build:
+```bash
+cmake --build --preset debug
+cmake --build --preset release
 ```
 
 ## Testing
@@ -20,5 +25,5 @@ cmake --build build
 [GTest](https://github.com/google/googletest) is used for testing:
 
 ```
-ctest --output-on-failure --test-dir build
+ctest --preset debug
 ```
