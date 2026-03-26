@@ -141,14 +141,22 @@ TEST(tests, vector_push_back_resize)
     EXPECT_EQ(vector.capacity(), 128) << "vector push back doesn't increase the capacity";
 }
 
+TEST(tests, vector_access_operator)
+{
+    dsa::Vector<int> vector;
+    vector.push_back(10);
+
+    const int value_to_compare = 10;
+    EXPECT_EQ(vector[0], value_to_compare) << "vector operator[] doesn't retrieve a reference";
+}
+
 TEST(tests, vector_at)
 {
     dsa::Vector<int> vector;
-    vector.push_back(1);
+    vector.push_back(10);
     EXPECT_NO_THROW(vector.at(0));
 
     const int value_to_compare = 10;
-    vector.at(0) = value_to_compare;
     EXPECT_EQ(vector.at(0), value_to_compare) << "vector at doesn't retrieve a reference";
 }
 

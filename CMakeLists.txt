@@ -16,6 +16,12 @@ target_compile_options(dsa INTERFACE
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
 )
 
+option(ENABLE_SANITIZERS "Enable ASan/UBSan" OFF)
+if(ENABLE_SANITIZERS)
+    target_compile_options(dsa INTERFACE -fsanitize=address,undefined)
+    target_link_options(dsa INTERFACE -fsanitize=address,undefined)
+endif()
+
 if(BUILD_TESTING)
 	enable_testing()
 	add_subdirectory(tests)
