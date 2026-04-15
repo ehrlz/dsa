@@ -16,14 +16,15 @@ target_compile_options(dsa INTERFACE
 
 option(ENABLE_SANITIZERS "Enable ASan/UBSan" OFF)
 if(ENABLE_SANITIZERS)
-    target_compile_options(dsa INTERFACE -fsanitize=address,undefined)
-    target_link_options(dsa INTERFACE -fsanitize=address,undefined)
+    target_compile_options(dsa INTERFACE -fsanitize=address,undefined, -fno-omit-frame-pointer)
+    target_link_options(dsa INTERFACE -fsanitize=address,undefined, -fno-omit-frame-pointer)
 endif()
 
-# Only test if it is the main project and the variable is enabled
-# https://github.com/nlohmann/json/blob/eba0a92bfb1abf242f30e894b96ba11c9f4048c7/CMakeLists.txt#L14
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR AND BUILD_TESTING)
-    enable_testing()
+# tests
+option(DSA_BUILD_TESTS "Build tests for dsa" ${PROJECT_IS_TOP_LEVEL})
+
+if(DSA_BUILD_TESTS)
+    include(CTest)
 	add_subdirectory(tests)
 endif()
 

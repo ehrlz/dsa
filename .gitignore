@@ -2,3 +2,7 @@ build/
 
 # clangd
 .cache/
+
+# testing & debugging
+Testing/
+.gdb_history
