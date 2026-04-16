@@ -42,8 +42,7 @@ class Vector
     Vector(const Vector& other)
         : data_(nullptr), size_(other.size_), capacity_(other.size_)
     {
-        if (capacity_ > 0)
-        {
+        if (capacity_ > 0) {
             data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
             std::uninitialized_copy(other.begin(), other.end(), data_);
         }
@@ -51,8 +50,7 @@ class Vector
 
     Vector& operator=(const Vector& other)
     {
-        if (this != &other)
-        {
+        if (this != &other) {
             Vector tmp(other);
             swap(tmp);
         }
@@ -67,8 +65,7 @@ class Vector
 
     Vector& operator=(Vector&& other)
     {
-        if (this != &other)
-        {
+        if (this != &other) {
             // other holds our data and destroys it at out of scope
             swap(other);
         }
@@ -98,14 +95,11 @@ class Vector
     // 2 vectors are consider equal if they have the same size and elements in the same order
     bool operator==(const Vector& other_vector) const
     {
-        if (size_ != other_vector.size_)
-        {
+        if (size_ != other_vector.size_) {
             return false;
         }
-        for (auto idx{0uz}; idx < size_; ++idx)
-        {
-            if (data_[idx] != other_vector.data_[idx])
-            {
+        for (auto idx{0uz}; idx < size_; ++idx) {
+            if (data_[idx] != other_vector.data_[idx]) {
                 return false;
             }
         }
@@ -161,8 +155,7 @@ class Vector
     // accesses
     T& at(std::size_t idx)
     {
-        if (idx >= size_)
-        {
+        if (idx >= size_) {
             throw std::out_of_range("vector: out of bounds access");
         }
         return data_[idx];
@@ -170,8 +163,7 @@ class Vector
 
     const T& at(std::size_t idx) const
     {
-        if (idx >= size_)
-        {
+        if (idx >= size_) {
             throw std::out_of_range("vector: out of bounds access");
         }
         return data_[idx];
@@ -206,17 +198,12 @@ class Vector
         T* new_data = static_cast<T*>(::operator new(new_capacity * sizeof(T)));
 
         // moves or copies each element from the old array
-        for (auto idx{0uz}; idx < size_; ++idx)
-        {
-            try
-            {
+        for (auto idx{0uz}; idx < size_; ++idx) {
+            try {
                 new (new_data + idx) T(std::move_if_noexcept(data_[idx]));
-            }
-            catch (...)
-            {
+            } catch (...) {
                 // cleans and rethrows
-                for (auto clean_idx{0uz}; clean_idx < idx; ++clean_idx)
-                {
+                for (auto clean_idx{0uz}; clean_idx < idx; ++clean_idx) {
                     new_data[clean_idx].~T();
                 }
                 ::operator delete(new_data);
@@ -225,8 +212,7 @@ class Vector
         }
 
         // cleans the old array
-        for (auto idx{0uz}; idx < size_; ++idx)
-        {
+        for (auto idx{0uz}; idx < size_; ++idx) {
             data_[idx].~T();
         }
         ::operator delete(data_);
@@ -237,8 +223,7 @@ class Vector
 
     void clear_memory()
     {
-        if (data_)
-        {
+        if (data_) {
             std::destroy_n(data_, size_);
             ::operator delete(data_);
         }
