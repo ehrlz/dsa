@@ -1,4 +1,5 @@
 build/
+compile_commands.json
 
 # clangd
 .cache/
@@ -6,3 +7,4 @@ build/
 # testing & debugging
 Testing/
 .gdb_history
+
