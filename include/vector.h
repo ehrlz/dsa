@@ -17,8 +17,6 @@ class Vector
 {
 
   public:
-    // TODO iterator support
-
     // ctors and dtors
     Vector()
         : data_(nullptr), size_(0uz), capacity_(0uz)
@@ -153,13 +151,6 @@ class Vector
     }
 
     // accesses
-    T& at(std::size_t idx)
-    {
-        if (idx >= size_) {
-            throw std::out_of_range("vector: out of bounds access");
-        }
-        return data_[idx];
-    }
 
     const T& at(std::size_t idx) const
     {
@@ -169,16 +160,30 @@ class Vector
         return data_[idx];
     }
 
-    // No bounds checking (faster. use at to access with safety)
-    T& operator[](std::size_t idx)
+    T& at(std::size_t idx)
     {
-        return data_[idx];
+        return const_cast<T&>(std::as_const(*this).at(idx));
     }
 
+    // No bounds checking (faster. use at to access with safety)
     const T& operator[](std::size_t idx) const
     {
         return data_[idx];
     }
+
+    T& operator[](std::size_t idx)
+    {
+        return const_cast<T&>(std::as_const(*this)[idx]);
+    }
+
+    // TODO
+    // pop_back()
+    // clear
+    // empty
+    // front
+    // back
+    // data
+    // resize(n), insert(), erase()
 
   private:
     T* data_;              // data stored in the heap
