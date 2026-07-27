@@ -178,8 +178,17 @@ class Vector
 
     // TODO
     // pop_back()
-    // clear
-    // empty
+
+    void clear()
+    {
+        size_ = 0;
+    }
+
+    bool empty()
+    {
+        return size_ == 0;
+    }
+
     // front
     // back
     // data
