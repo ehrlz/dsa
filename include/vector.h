@@ -209,8 +209,34 @@ class Vector
         return data_[size_ - 1];
     }
 
-    // data
-    // resize(n), insert(), erase()
+    T& data()
+    {
+        return *data_;
+    }
+
+    const T& data() const
+    {
+        return *data_;
+    }
+
+    void resize(size_t n)
+    {
+        resize(n, T{});
+    }
+
+    void resize(size_t n, const T& value)
+    {
+        if (n > capacity_) {
+            reallocate(n);
+        }
+        if (n > size_) {
+            for (size_t i = size_; i < n; ++i) {
+                data_[i] = value;
+            }
+        }
+        size_ = n;
+    }
+    // insert(), erase()
 
   private:
     T* data_;              // data stored in the heap
