@@ -189,8 +189,26 @@ class Vector
         return size_ == 0;
     }
 
-    // front
-    // back
+    T& front()
+    {
+        return data_[0];
+    }
+
+    const T& front() const
+    {
+        return data_[0];
+    }
+
+    T& back()
+    {
+        return data_[size_ - 1];
+    }
+
+    const T& back() const
+    {
+        return data_[size_ - 1];
+    }
+
     // data
     // resize(n), insert(), erase()
 

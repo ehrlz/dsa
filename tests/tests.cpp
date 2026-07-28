@@ -8,7 +8,7 @@ namespace
 dsa::Vector<int> fill_vector(size_t n)
 {
     dsa::Vector<int> vector;
-    for (size_t i = 0uz; i < n; ++i) {
+    for (size_t i = 1uz; i < n; ++i) {
         vector.push_back(i);
     }
     return vector;
@@ -203,9 +203,9 @@ TEST(tests, vector_clear)
 {
     auto vector = fill_vector(100);
     vector.clear();
-    EXPECT_TRUE(vector.size() == 0);
+    EXPECT_EQ(vector.size(), 0);
     vector.push_back(1);
-    EXPECT_TRUE(vector.size() == 1);
+    EXPECT_EQ(vector.size(), 1);
 }
 
 TEST(tests, vector_empty)
@@ -213,4 +213,16 @@ TEST(tests, vector_empty)
     auto vector = fill_vector(100);
     vector.clear();
     EXPECT_TRUE(vector.empty());
+}
+
+TEST(tests, vector_front)
+{
+    auto vector = fill_vector(2);
+    EXPECT_EQ(vector.front(), 1uz);
+}
+
+TEST(tests, vector_back)
+{
+    const auto vector = fill_vector(20);
+    EXPECT_EQ(vector.back(), 19uz);
 }
