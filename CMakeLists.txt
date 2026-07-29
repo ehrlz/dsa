@@ -16,8 +16,8 @@ target_compile_options(dsa INTERFACE
 
 option(ENABLE_SANITIZERS "Enable ASan/UBSan" OFF)
 if(ENABLE_SANITIZERS)
-    target_compile_options(dsa INTERFACE -fsanitize=address,undefined, -fno-omit-frame-pointer)
-    target_link_options(dsa INTERFACE -fsanitize=address,undefined, -fno-omit-frame-pointer)
+    target_compile_options(dsa INTERFACE -fsanitize=address,undefined -fno-omit-frame-pointer -g -O1)
+    target_link_options(dsa INTERFACE -fsanitize=address,undefined)
 endif()
 
 # tests
