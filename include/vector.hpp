@@ -273,7 +273,7 @@ class Vector
             throw std::out_of_range("vector: erasing out of bounds");
         }
         // move elems to the left
-        for (size_t i = pos; i < size_; ++i) {
+        for (size_t i = pos; i < size_ - 1; ++i) {
             data_[i] = data_[i + 1];
         }
         --size_;
