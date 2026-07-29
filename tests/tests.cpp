@@ -1,4 +1,4 @@
-#include "vector.h"
+#include "vector.hpp"
 
 #include <gtest/gtest.h>
 #include <stdexcept>
