@@ -181,8 +181,13 @@ class Vector
         return const_cast<T&>(std::as_const(*this)[idx]);
     }
 
-    // TODO
-    // pop_back()
+    void pop_back()
+    {
+        if (size_ == 0) {
+            throw std::runtime_error("vector: popping back an empty vector");
+        }
+        --size_;
+    }
 
     void clear()
     {
@@ -261,7 +266,18 @@ class Vector
 
         ++size_;
     }
-    // erase()
+
+    void erase(size_t pos)
+    {
+        if (pos >= size_) {
+            throw std::out_of_range("vector: erasing out of bounds");
+        }
+        // move elems to the left
+        for (size_t i = pos; i < size_; ++i) {
+            data_[i] = data_[i + 1];
+        }
+        --size_;
+    }
 
   private:
     T* data_;              // data stored in the heap

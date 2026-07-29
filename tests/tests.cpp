@@ -1,6 +1,7 @@
 #include "vector.h"
 
 #include <gtest/gtest.h>
+#include <stdexcept>
 #include <utility>
 
 namespace
@@ -199,6 +200,20 @@ TEST(tests, vector_equal_op_no_size)
     EXPECT_EQ(vector, other_vector) << "vector eq operator is not working properly";
 }
 
+TEST(tests, vector_pop_back)
+{
+    auto vector = fill_vector(10);
+    vector.pop_back();
+    auto expected_vector = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    EXPECT_EQ(vector, expected_vector);
+}
+
+TEST(tests, vector_pop_back_empty)
+{
+    auto vector = dsa::Vector<int>{};
+    EXPECT_THROW(vector.pop_back(), std::runtime_error);
+}
+
 TEST(tests, vector_clear)
 {
     auto vector = fill_vector(100);
@@ -268,5 +283,37 @@ TEST(tests, vector_insert_empty)
     auto vector = dsa::Vector<int>{};
     vector.insert(0, 1);
     dsa::Vector expected_vector = {1};
+    EXPECT_EQ(vector, expected_vector);
+}
+
+TEST(tests, vector_erase)
+{
+    auto vector = fill_vector(10);
+    vector.erase(5);
+    dsa::Vector expected_vector = {1, 2, 3, 4, 5, 7, 8, 9, 10};
+    EXPECT_EQ(vector, expected_vector);
+}
+
+TEST(tests, vector_erase_empty)
+{
+    auto vector = dsa::Vector<int>{};
+    EXPECT_THROW(vector.erase(2), std::out_of_range);
+}
+
+TEST(tests, vector_erase_first)
+{
+    auto vector = fill_vector(10);
+    vector.erase(0);
+    dsa::Vector expected_vector = {2, 3, 4, 5, 6, 7, 8, 9, 10};
+    EXPECT_EQ(vector, expected_vector);
+}
+
+TEST(tests, vector_erase_last)
+{
+    const size_t size = 10;
+    const size_t last_pos = size - 1;
+    auto vector = fill_vector(size);
+    vector.erase(last_pos);
+    dsa::Vector expected_vector = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     EXPECT_EQ(vector, expected_vector);
 }
