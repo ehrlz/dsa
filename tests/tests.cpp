@@ -248,3 +248,25 @@ TEST(tests, vector_resize_init_value)
     dsa::Vector expected_vector = {1, 2, 3, 4, 5, 14, 14, 14, 14, 14};
     EXPECT_EQ(vector, expected_vector);
 }
+
+TEST(tests, vector_insert)
+{
+    auto vector = fill_vector(10);
+    vector.insert(5, 14);
+    dsa::Vector expected_vector = {1, 2, 3, 4, 5, 14, 6, 7, 8, 9, 10};
+    EXPECT_EQ(vector, expected_vector);
+}
+
+TEST(tests, vector_insert_out_of_pos)
+{
+    auto vector = dsa::Vector<int>{};
+    EXPECT_THROW(vector.insert(5, 14), std::out_of_range);
+}
+
+TEST(tests, vector_insert_empty)
+{
+    auto vector = dsa::Vector<int>{};
+    vector.insert(0, 1);
+    dsa::Vector expected_vector = {1};
+    EXPECT_EQ(vector, expected_vector);
+}

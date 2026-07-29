@@ -9,6 +9,11 @@
 #include <stdexcept>
 #include <utility>
 
+namespace
+{
+const int GROW_FACTOR = 2;
+}
+
 namespace dsa
 {
 
@@ -141,7 +146,7 @@ class Vector
     {
         if (size_ == capacity_) // reallocation needed
         {
-            std::size_t new_cap = capacity_ == 0 ? 1 : size_ * 2;
+            std::size_t new_cap = capacity_ == 0 ? 1 : size_ * GROW_FACTOR;
             reallocate(new_cap);
         }
 
@@ -236,7 +241,27 @@ class Vector
         }
         size_ = n;
     }
-    // insert(), erase()
+
+    void insert(size_t pos, const T& elem)
+    {
+        if (pos > size_) {
+            throw std::out_of_range("invalid position");
+        }
+
+        if (size_ == capacity_) {
+            reallocate(capacity_ == 0 ? 1 : capacity_ * GROW_FACTOR);
+        }
+
+        // move elems to the right
+        for (size_t i = size_; i > pos; --i) {
+            data_[i] = std::move(data_[i - 1]);
+        }
+
+        data_[pos] = elem;
+
+        ++size_;
+    }
+    // erase()
 
   private:
     T* data_;              // data stored in the heap
