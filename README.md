@@ -10,14 +10,16 @@ There are some personal preferences and designs that doesn't pretend to be usefu
 
 Configure and build:
 ```bash
-cmake --preset debug    # debug + sanitizers + tests
+cmake --preset debug    # debug
 cmake --preset release  # optimized
+cmake --preset asan     # sanitizers
 ```
 
 Build:
 ```bash
 cmake --build --preset debug
 cmake --build --preset release
+cmake --build --preset asan
 ```
 
 ## Testing
@@ -26,4 +28,7 @@ cmake --build --preset release
 
 ```
 ctest --preset debug
+ctest --preset release
+ctest --preset asan
 ```
+
