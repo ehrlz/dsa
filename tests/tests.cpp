@@ -26,6 +26,24 @@ dsa::Vector<std::string> fill_vector_string(size_t n)
 }
 } // namespace
 
+namespace dsa
+{
+
+template <typename T>
+void PrintTo(const Vector<T>& v, std::ostream* os)
+{
+    *os << "[";
+    for (size_t i = 0; i < v.size(); ++i) {
+        if (i > 0) {
+            *os << ", ";
+        }
+        *os << ::testing::PrintToString(v[i]); // handles nested types too
+    }
+    *os << "] (size=" << v.size() << ", capacity=" << v.capacity() << ")";
+}
+
+} // namespace dsa
+
 TEST(tests, vector_constructor)
 {
     dsa::Vector<int> vector;
