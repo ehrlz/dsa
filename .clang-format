@@ -34,3 +34,7 @@ SpaceBeforeParens: ControlStatements
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 SpacesInAngles: Never
+
+# File ending with one newline char
+InsertNewlineAtEOF: true
+
