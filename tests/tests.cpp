@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace
@@ -11,6 +12,15 @@ dsa::Vector<int> fill_vector(size_t n)
     dsa::Vector<int> vector;
     for (size_t i = 1uz; i <= n; ++i) {
         vector.push_back(i);
+    }
+    return vector;
+}
+
+dsa::Vector<std::string> fill_vector_string(size_t n)
+{
+    dsa::Vector<std::string> vector;
+    for (size_t i = 1uz; i <= n; ++i) {
+        vector.push_back(std::to_string(i));
     }
     return vector;
 }
@@ -202,9 +212,17 @@ TEST(tests, vector_equal_op_no_size)
 
 TEST(tests, vector_pop_back)
 {
-    auto vector = fill_vector(10);
+    auto vector = fill_vector_string(10);
     vector.pop_back();
-    auto expected_vector = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    auto expected_vector = {std::to_string(1),
+                            std::to_string(2),
+                            std::to_string(3),
+                            std::to_string(4),
+                            std::to_string(5),
+                            std::to_string(6),
+                            std::to_string(7),
+                            std::to_string(8),
+                            std::to_string(9)};
     EXPECT_EQ(vector, expected_vector);
 }
 
@@ -216,16 +234,16 @@ TEST(tests, vector_pop_back_empty)
 
 TEST(tests, vector_clear)
 {
-    auto vector = fill_vector(100);
+    auto vector = fill_vector_string(100);
     vector.clear();
     EXPECT_EQ(vector.size(), 0);
-    vector.push_back(1);
+    vector.push_back(std::to_string(1));
     EXPECT_EQ(vector.size(), 1);
 }
 
 TEST(tests, vector_empty)
 {
-    auto vector = fill_vector(100);
+    auto vector = fill_vector_string(100);
     vector.clear();
     EXPECT_TRUE(vector.empty());
 }
@@ -250,17 +268,35 @@ TEST(tests, vector_data)
 
 TEST(tests, vector_resize)
 {
-    auto vector = fill_vector(5);
-    vector.resize(10, 0);
-    dsa::Vector expected_vector = {1, 2, 3, 4, 5, 0, 0, 0, 0, 0};
+    auto vector = fill_vector_string(5);
+    vector.resize(10);
+    dsa::Vector expected_vector = {std::to_string(1),
+                                   std::to_string(2),
+                                   std::to_string(3),
+                                   std::to_string(4),
+                                   std::to_string(5),
+                                   std::string{},
+                                   std::string{},
+                                   std::string{},
+                                   std::string{},
+                                   std::string{}};
     EXPECT_EQ(vector, expected_vector);
 }
 
 TEST(tests, vector_resize_init_value)
 {
-    auto vector = fill_vector(5);
-    vector.resize(10, 14);
-    dsa::Vector expected_vector = {1, 2, 3, 4, 5, 14, 14, 14, 14, 14};
+    auto vector = fill_vector_string(5);
+    vector.resize(10, std::to_string(14));
+    dsa::Vector expected_vector = {std::to_string(1),
+                                   std::to_string(2),
+                                   std::to_string(3),
+                                   std::to_string(4),
+                                   std::to_string(5),
+                                   std::to_string(14),
+                                   std::to_string(14),
+                                   std::to_string(14),
+                                   std::to_string(14),
+                                   std::to_string(14)};
     EXPECT_EQ(vector, expected_vector);
 }
 
@@ -288,9 +324,17 @@ TEST(tests, vector_insert_empty)
 
 TEST(tests, vector_erase)
 {
-    auto vector = fill_vector(10);
+    auto vector = fill_vector_string(10);
     vector.erase(5);
-    dsa::Vector expected_vector = {1, 2, 3, 4, 5, 7, 8, 9, 10};
+    dsa::Vector expected_vector = {std::to_string(1),
+                                   std::to_string(2),
+                                   std::to_string(3),
+                                   std::to_string(4),
+                                   std::to_string(5),
+                                   std::to_string(7),
+                                   std::to_string(8),
+                                   std::to_string(9),
+                                   std::to_string(10)};
     EXPECT_EQ(vector, expected_vector);
 }
 
@@ -302,9 +346,17 @@ TEST(tests, vector_erase_empty)
 
 TEST(tests, vector_erase_first)
 {
-    auto vector = fill_vector(10);
+    auto vector = fill_vector_string(10);
     vector.erase(0);
-    dsa::Vector expected_vector = {2, 3, 4, 5, 6, 7, 8, 9, 10};
+    dsa::Vector expected_vector = {std::to_string(2),
+                                   std::to_string(3),
+                                   std::to_string(4),
+                                   std::to_string(5),
+                                   std::to_string(6),
+                                   std::to_string(7),
+                                   std::to_string(8),
+                                   std::to_string(9),
+                                   std::to_string(10)};
     EXPECT_EQ(vector, expected_vector);
 }
 
@@ -312,8 +364,16 @@ TEST(tests, vector_erase_last)
 {
     const size_t size = 10;
     const size_t last_pos = size - 1;
-    auto vector = fill_vector(size);
+    auto vector = fill_vector_string(size);
     vector.erase(last_pos);
-    dsa::Vector expected_vector = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    dsa::Vector expected_vector = {std::to_string(1),
+                                   std::to_string(2),
+                                   std::to_string(3),
+                                   std::to_string(4),
+                                   std::to_string(5),
+                                   std::to_string(6),
+                                   std::to_string(7),
+                                   std::to_string(8),
+                                   std::to_string(9)};
     EXPECT_EQ(vector, expected_vector);
 }

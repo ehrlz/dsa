@@ -186,6 +186,7 @@ class Vector
         if (size_ == 0) {
             throw std::runtime_error("vector: popping back an empty vector");
         }
+        data_[size_ - 1].~T();
         --size_;
     }
 
@@ -241,7 +242,11 @@ class Vector
         }
         if (n > size_) {
             for (size_t i = size_; i < n; ++i) {
-                data_[i] = value;
+                ::new (static_cast<void*>(std::addressof(data_[i]))) T(value);
+            }
+        } else if (n < size_) {
+            for (size_t i = n; i < size_; ++i) {
+                data_[i].~T();
             }
         }
         size_ = n;
@@ -272,6 +277,9 @@ class Vector
         if (pos >= size_) {
             throw std::out_of_range("vector: erasing out of bounds");
         }
+
+        data_[pos].~T();
+
         // move elems to the left
         for (size_t i = pos; i < size_ - 1; ++i) {
             data_[i] = data_[i + 1];
