@@ -1,1 +1,10 @@
 build/
+compile_commands.json
+
+# clangd
+.cache/
+
+# testing & debugging
+Testing/
+.gdb_history
+

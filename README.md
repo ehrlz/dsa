@@ -1,14 +1,34 @@
 # dsa
 
-Data structures and algorithms implemented in C.
+Data structures and algorithms implemented in C++.
+This repository started following the idea to explore the implementation and concepts of the C++ STL.
 
-## Compile
-```
-cmake .. && cmake --build .
+There are some personal preferences and designs that doesn't pretend to be useful for others.
+
+
+## Building
+
+Configure and build:
+```bash
+cmake --preset debug    # debug
+cmake --preset release  # optimized
+cmake --preset asan     # sanitizers
 ```
 
-## Test
-In `build/`:
+Build:
+```bash
+cmake --build --preset debug
+cmake --build --preset release
+cmake --build --preset asan
 ```
-ctest --output-on-failure
+
+## Testing
+
+[GTest](https://github.com/google/googletest) is used for testing:
+
 ```
+ctest --preset debug
+ctest --preset release
+ctest --preset asan
+```
+

@@ -1,0 +1,40 @@
+BasedOnStyle: LLVM
+BreakBeforeBraces: Linux
+
+# Layout
+ColumnLimit: 100
+IndentWidth: 4
+ContinuationIndentWidth: 4
+UseTab: Never
+
+# Pointers & templates
+PointerAlignment: Left
+AlwaysBreakTemplateDeclarations: Yes
+
+# Packing
+BinPackArguments: false
+BinPackParameters: false
+PackConstructorInitializers: NextLineOnly
+BreakConstructorInitializers: BeforeComma
+
+# Includes
+IncludeBlocks: Regroup
+
+# Braces insertion
+InsertBraces: true
+
+# No single-line functions (empty bodies collapse to {})
+AllowShortFunctionsOnASingleLine: Empty
+BraceWrapping:
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+
+# Spacing: compact
+SpaceBeforeParens: ControlStatements
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpacesInAngles: Never
+
+# File ending with one newline char
+InsertNewlineAtEOF: true
+

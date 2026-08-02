@@ -1,15 +1,30 @@
 cmake_minimum_required(VERSION 3.20)
+project(dsa)
 
-project(dsa VERSION 0.1.0 LANGUAGES C)
+add_library(dsa INTERFACE)
+target_include_directories(
+	dsa INTERFACE
+	${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
-set(CMAKE_C_STANDARD 23)
-set(CMAKE_C_STANDARD_REQUIRED ON)
+target_compile_features(dsa INTERFACE cxx_std_23) # Only this library is compiled with C++23
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+target_compile_options(dsa INTERFACE
+    $<$<CXX_COMPILER_ID:Clang,GNU>:-Wall -Wextra -Wpedantic>
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+)
 
-# Habilitar CTest para poder ejecutar 'make test' o 'ctest'
-enable_testing()
+option(ENABLE_SANITIZERS "Enable ASan/UBSan" OFF)
+if(ENABLE_SANITIZERS)
+    target_compile_options(dsa INTERFACE -fsanitize=address,undefined -fno-omit-frame-pointer -g -O1)
+    target_link_options(dsa INTERFACE -fsanitize=address,undefined)
+endif()
 
-# Añadir las subcarpetas
-add_subdirectory(lib)
-add_subdirectory(test)
+# tests
+option(DSA_BUILD_TESTS "Build tests for dsa" ${PROJECT_IS_TOP_LEVEL})
+
+if(DSA_BUILD_TESTS)
+    include(CTest)
+	add_subdirectory(tests)
+endif()
+
