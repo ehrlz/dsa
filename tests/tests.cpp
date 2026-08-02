@@ -231,7 +231,7 @@ TEST(tests, vector_at_init_out_of_bounds)
         << "vector at doesn't raises an exception accessing out of bounds";
 }
 
-TEST(tests, vector_equal_op_no_size)
+TEST(tests, vector_equal_op_empty)
 {
     dsa::Vector<int> vector;
     dsa::Vector<int> other_vector;
@@ -258,7 +258,7 @@ TEST(tests, vector_pop_back)
 TEST(tests, vector_pop_back_empty)
 {
     auto vector = dsa::Vector<int>{};
-    EXPECT_THROW(vector.pop_back(), std::runtime_error);
+    EXPECT_THROW(vector.pop_back(), std::out_of_range);
 }
 
 TEST(tests, vector_clear)

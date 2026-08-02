@@ -125,7 +125,7 @@ class Vector
         reallocate(new_capacity);
     }
 
-    // note: push back a self-reference is UB
+    // push back a self-reference is UB
     void push_back(const T& elem)
     {
         emplace_back(elem);
@@ -163,7 +163,7 @@ class Vector
 
     T& at(std::size_t idx)
     {
-        return const_cast<T&>(std::as_const(*this).at(idx));
+        return const_cast<T&>(std::as_const(*this).at(idx)); // Mayers pattern
     }
 
     // No bounds checking (faster. use at to access with safety)
@@ -174,13 +174,13 @@ class Vector
 
     T& operator[](std::size_t idx)
     {
-        return const_cast<T&>(std::as_const(*this)[idx]);
+        return const_cast<T&>(std::as_const(*this)[idx]); // Mayers pattern
     }
 
     void pop_back()
     {
         if (size_ == 0) {
-            throw std::runtime_error("vector: popping back an empty vector");
+            throw std::out_of_range("vector: popping back an empty vector");
         }
         data_[size_ - 1].~T();
         --size_;
@@ -190,11 +190,6 @@ class Vector
     {
         clear_data_elems();
         size_ = 0;
-    }
-
-    bool empty()
-    {
-        return size_ == 0;
     }
 
     bool empty() const
@@ -322,6 +317,7 @@ class Vector
         std::swap(data_, other.data_);
     }
 
+    // exceptions handled during the reallocation
     void reallocate(std::size_t new_capacity)
     {
         // reserves new memory
