@@ -125,6 +125,7 @@ class Vector
         reallocate(new_capacity);
     }
 
+    // note: push back a self-reference is UB
     void push_back(const T& elem)
     {
         emplace_back(elem);
@@ -266,7 +267,8 @@ class Vector
         size_ = n;
     }
 
-    void insert(size_t pos, const T& elem)
+    // note: inserting a self-reference is UB
+    void insert(std::size_t pos, const T& elem)
     {
         if (pos > size_) {
             throw std::out_of_range("invalid position");
