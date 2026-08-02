@@ -9,11 +9,6 @@
 #include <stdexcept>
 #include <utility>
 
-namespace
-{
-const int GROW_FACTOR = 2;
-}
-
 namespace dsa
 {
 
@@ -66,7 +61,7 @@ class Vector
         swap(other);
     }
 
-    Vector& operator=(Vector&& other)
+    Vector& operator=(Vector&& other) noexcept
     {
         if (this != &other) {
             // other holds our data and destroys it at out of scope
@@ -192,10 +187,16 @@ class Vector
 
     void clear()
     {
+        clear_data_elems();
         size_ = 0;
     }
 
     bool empty()
+    {
+        return size_ == 0;
+    }
+
+    bool empty() const
     {
         return size_ == 0;
     }
@@ -220,19 +221,32 @@ class Vector
         return data_[size_ - 1];
     }
 
-    T& data()
+    T* data() noexcept
     {
-        return *data_;
+        return data_;
     }
 
-    const T& data() const
+    const T* data() const noexcept
     {
-        return *data_;
+        return data_;
     }
 
     void resize(size_t n)
     {
-        resize(n, T{});
+
+        if (n > capacity_) {
+            reallocate(n);
+        }
+        if (n > size_) {
+            for (size_t i = size_; i < n; ++i) {
+                std::construct_at(data_ + i);
+            }
+        } else if (n < size_) {
+            for (size_t i = n; i < size_; ++i) {
+                data_[i].~T();
+            }
+        }
+        size_ = n;
     }
 
     void resize(size_t n, const T& value)
@@ -263,11 +277,15 @@ class Vector
         }
 
         // move elems to the right
-        for (size_t i = size_; i > pos; --i) {
-            data_[i] = std::move(data_[i - 1]);
+        if (size_ > pos) {
+            std::construct_at(data_ + size_, std::move(data_[size_ - 1]));
+            for (size_t i = size_ - 1; i > pos; --i) {
+                data_[i] = std::move(data_[i - 1]);
+            }
+            data_[pos] = elem;
+        } else { // inserting last
+            std::construct_at(data_ + pos, elem);
         }
-
-        data_[pos] = elem;
 
         ++size_;
     }
@@ -278,12 +296,13 @@ class Vector
             throw std::out_of_range("vector: erasing out of bounds");
         }
 
-        data_[pos].~T();
-
         // move elems to the left
         for (size_t i = pos; i < size_ - 1; ++i) {
-            data_[i] = data_[i + 1];
+            data_[i] = std::move(data_[i + 1]);
         }
+
+        data_[size_ - 1].~T();
+
         --size_;
     }
 
@@ -291,6 +310,8 @@ class Vector
     T* data_;              // data stored in the heap
     std::size_t size_;     // actual elements
     std::size_t capacity_; // max reserved capacity
+
+    static constexpr std::size_t GROW_FACTOR = 2;
 
     void swap(Vector& other) noexcept
     {
@@ -331,9 +352,14 @@ class Vector
     void clear_memory()
     {
         if (data_) {
-            std::destroy_n(data_, size_);
+            clear_data_elems();
             ::operator delete(data_);
         }
+    }
+
+    void clear_data_elems()
+    {
+        std::destroy_n(data_, size_);
     }
 };
 
