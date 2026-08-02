@@ -232,42 +232,42 @@ class Vector
         return data_;
     }
 
-    void resize(size_t n)
+    void resize(std::size_t n)
     {
 
         if (n > capacity_) {
             reallocate(n);
         }
         if (n > size_) {
-            for (size_t i = size_; i < n; ++i) {
+            for (std::size_t i = size_; i < n; ++i) {
                 std::construct_at(data_ + i);
             }
         } else if (n < size_) {
-            for (size_t i = n; i < size_; ++i) {
+            for (std::size_t i = n; i < size_; ++i) {
                 data_[i].~T();
             }
         }
         size_ = n;
     }
 
-    void resize(size_t n, const T& value)
+    void resize(std::size_t n, const T& value)
     {
         if (n > capacity_) {
             reallocate(n);
         }
         if (n > size_) {
-            for (size_t i = size_; i < n; ++i) {
+            for (std::size_t i = size_; i < n; ++i) {
                 ::new (static_cast<void*>(std::addressof(data_[i]))) T(value);
             }
         } else if (n < size_) {
-            for (size_t i = n; i < size_; ++i) {
+            for (std::size_t i = n; i < size_; ++i) {
                 data_[i].~T();
             }
         }
         size_ = n;
     }
 
-    // note: inserting a self-reference is UB
+    // inserting a self-reference is UB
     void insert(std::size_t pos, const T& elem)
     {
         if (pos > size_) {
@@ -281,7 +281,7 @@ class Vector
         // move elems to the right
         if (size_ > pos) {
             std::construct_at(data_ + size_, std::move(data_[size_ - 1]));
-            for (size_t i = size_ - 1; i > pos; --i) {
+            for (std::size_t i = size_ - 1; i > pos; --i) {
                 data_[i] = std::move(data_[i - 1]);
             }
             data_[pos] = elem;
@@ -292,14 +292,14 @@ class Vector
         ++size_;
     }
 
-    void erase(size_t pos)
+    void erase(std::size_t pos)
     {
         if (pos >= size_) {
             throw std::out_of_range("vector: erasing out of bounds");
         }
 
         // move elems to the left
-        for (size_t i = pos; i < size_ - 1; ++i) {
+        for (std::size_t i = pos; i < size_ - 1; ++i) {
             data_[i] = std::move(data_[i + 1]);
         }
 
