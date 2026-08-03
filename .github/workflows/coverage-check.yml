@@ -1,0 +1,42 @@
+name: coverage-check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          pip install --break-system-packages "gcovr==8.4"
+
+      - name: Configure with coverage flags
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_CXX_FLAGS="--coverage -O0"
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Generate coverage, print and check is at 85% or higher
+        run: |
+          COVERAGE=$(gcovr -r . --txt --exclude build --exclude tests | grep "TOTAL" | awk '{print $4}' | sed 's/%//')
+          
+          gcovr -r . --markdown --exclude build --exclude tests -o coverage.md
+          cat coverage.md >> $GITHUB_STEP_SUMMARY
+
+          if [ $(echo "$COVERAGE < 85" | bc) -eq 1 ]; then
+            echo "Error: Coverage under 85% (actual: $COVERAGE%)"
+            exit 1
+          fi
+

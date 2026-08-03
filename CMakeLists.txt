@@ -20,6 +20,13 @@ if(ENABLE_SANITIZERS)
     target_link_options(dsa INTERFACE -fsanitize=address,undefined)
 endif()
 
+
+option(ENABLE_COVERAGE "Enable coverage" OFF)
+if(ENABLE_COVERAGE)
+    target_compile_options(dsa INTERFACE --coverage)
+    target_link_options(dsa INTERFACE --coverage)
+endif()
+
 # tests
 option(DSA_BUILD_TESTS "Build tests for dsa" ${PROJECT_IS_TOP_LEVEL})
 
