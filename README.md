@@ -1,5 +1,7 @@
 # dsa
 
+![CI](https://github.com/ehrlz/dsa/actions/workflows/ci.yml/badge.svg)
+
 Data structures and algorithms implemented in C++.
 This repository started following the idea to explore the implementation and concepts of the C++ STL.
 
