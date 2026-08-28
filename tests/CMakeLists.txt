@@ -11,8 +11,9 @@ FetchContent_MakeAvailable(googletest)
 include(GoogleTest)
 
 add_executable(
-	tests
-	tests.cpp
+    tests
+    vector.cpp
+    linked_list.cpp
 )
 
 target_link_libraries(
