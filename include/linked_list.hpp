@@ -23,7 +23,37 @@ class LinkedList
     {
     }
 
-    // TODO move semantics
+    /**
+     * Construct a list copying the content of another LinkedList.
+     *
+     * @param other LinkedList to copy.
+     *
+     * @note O(n) cost. Copies each element of other list.
+     */
+    LinkedList(const LinkedList& other)
+    {
+        if (!other.head_) {
+            return;
+        }
+
+        head_ = std::make_unique<Node>(other.head_->data, nullptr);
+        Node* dst = head_.get();
+        Node* src = other.head_->next.get();
+        while (src) {
+            dst->next = std::make_unique<Node>(src->data, nullptr);
+            dst = dst->next.get();
+            src = src->next.get();
+        }
+    }
+
+    /**
+     * Constructs a list by taking ownership of another list's elements.
+     *
+     * @param other List to move from. Left in an invalid state.
+     *
+     * @note O(1) cost. No copy, only pointers are managed.
+     */
+    LinkedList(LinkedList&&) = default;
 
     /**
      * Constructs a list from an initializer list.
@@ -68,7 +98,7 @@ class LinkedList
      *
      * @return The number of elements.
      */
-    std::size_t size()
+    std::size_t size() const
     {
         std::size_t size = 0;
 
@@ -91,7 +121,7 @@ class LinkedList
      *
      * @return true if the list has no elements.
      */
-    bool empty()
+    bool empty() const
     {
         return size() == 0;
     }
@@ -104,7 +134,7 @@ class LinkedList
      * @warning If empty() is true, the behavior is undefined.
      *          As std::forward_list::front().
      */
-    T& front()
+    T& front() const
     {
         return head_->data;
     }
@@ -116,9 +146,64 @@ class LinkedList
      * @warning If empty() is true, the behavior is undefined.
      *          As std::forward_list::back().
      */
-    T& back()
+    T& back() const
     {
         return get_last_node()->data;
+    }
+
+    /**
+     * Compares two LinkedLists for equality.
+     *
+     * Two lists are equal if they contain the same number of elements and
+     * each pair of corresponding elements, taken in order, compares equal
+     * via T's operator==.
+     *
+     * @param lhs First LinkedList to compare.
+     * @param rhs Second LinkedList to compare.
+     * @return true if the lists are equal, false otherwise.
+     *
+     * @note friend declaration allows comparisons as {1,2,3}==list
+     */
+    friend bool operator==(const LinkedList& lhs, const LinkedList& rhs)
+    {
+        if (lhs.size() != rhs.size()) {
+            return false;
+        }
+
+        Node* l_node = lhs.head_.get();
+        Node* r_node = rhs.head_.get();
+        while (l_node) {
+            if (l_node->data != r_node->data) {
+                return false;
+            }
+            l_node = l_node->next.get();
+            r_node = r_node->next.get();
+        }
+        return true;
+    }
+
+    /**
+     * Writes the list's elements to a stream, space-separated.
+     *
+     * @param os Output stream.
+     * @param list List to print.
+     * @return The stream, for chaining.
+     */
+    friend std::ostream& operator<<(std::ostream& os, const LinkedList& list)
+    {
+        os << "[";
+        const Node* node = list.head_.get();
+        bool first = true;
+        while (node) {
+            if (!first) {
+                os << ", ";
+            }
+            os << node->data;
+            first = false;
+            node = node->next.get();
+        }
+        os << "]";
+        return os;
     }
 
   private:
@@ -127,7 +212,7 @@ class LinkedList
         std::unique_ptr<Node> next;
     };
 
-    Node* get_last_node()
+    Node* get_last_node() const
     {
         Node* curr_node = head_.get();
         if (!curr_node) {
