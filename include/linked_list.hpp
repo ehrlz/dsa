@@ -47,6 +47,20 @@ class LinkedList
     }
 
     /**
+     * Construcs a list by copying the content of the asigned LinkedList.
+     *
+     * @param other LinkedList asigned to copy.
+     *
+     * @note O(n) cost. Copies each element of other list.
+     */
+    LinkedList& operator=(const LinkedList& other)
+    {
+        LinkedList tmp(other);
+        std::swap(head_, tmp.head_);
+        return *this;
+    }
+
+    /**
      * Constructs a list by taking ownership of another list's elements.
      *
      * @param other List to move from. Left in an invalid state.
@@ -54,6 +68,22 @@ class LinkedList
      * @note O(1) cost. No copy, only pointers are managed.
      */
     LinkedList(LinkedList&&) = default;
+
+    /**
+     * Constructs a list by taking ownership of the asigned list's elements.
+     *
+     * @param other List to move from. Left in an invalid state.
+     *
+     * @note O(1) cost. No copy, only pointers are managed.
+     */
+    LinkedList& operator=(LinkedList&& other) noexcept
+    {
+        // comparing adresses
+        if (this != &other) {
+            head_ = std::move(other.head_);
+        }
+        return *this;
+    }
 
     /**
      * Constructs a list from an initializer list.
@@ -98,7 +128,7 @@ class LinkedList
      *
      * @return The number of elements.
      */
-    std::size_t size() const
+    [[nodiscard]] std::size_t size() const
     {
         std::size_t size = 0;
 
@@ -121,7 +151,7 @@ class LinkedList
      *
      * @return true if the list has no elements.
      */
-    bool empty() const
+    [[nodiscard]] bool empty() const
     {
         return size() == 0;
     }
@@ -134,7 +164,7 @@ class LinkedList
      * @warning If empty() is true, the behavior is undefined.
      *          As std::forward_list::front().
      */
-    T& front() const
+    [[nodiscard]] T& front() const
     {
         return head_->data;
     }
@@ -146,7 +176,7 @@ class LinkedList
      * @warning If empty() is true, the behavior is undefined.
      *          As std::forward_list::back().
      */
-    T& back() const
+    [[nodiscard]] T& back() const
     {
         return get_last_node()->data;
     }
@@ -164,7 +194,7 @@ class LinkedList
      *
      * @note friend declaration allows comparisons as {1,2,3}==list
      */
-    friend bool operator==(const LinkedList& lhs, const LinkedList& rhs)
+    [[nodiscard]] friend bool operator==(const LinkedList& lhs, const LinkedList& rhs)
     {
         if (lhs.size() != rhs.size()) {
             return false;
