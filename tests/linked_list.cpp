@@ -128,16 +128,62 @@ TEST(linked_list, ll_move_assignment_empty)
     EXPECT_EQ(src.size(), 0);
 }
 
-TEST(linked_list, ll_append)
+TEST(linked_list, ll_append_last)
 {
     dsa::LinkedList<int> list;
     const int n = 14;
     for (int i = 0; i < n; ++i) {
-        list.append(i);
+        list.append_last(i);
     }
 
     dsa::LinkedList<int> expected_list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
     EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, ll_append_first)
+{
+    dsa::LinkedList<int> list;
+    const int n = 14;
+    for (int i = 0; i < n; ++i) {
+        list.append_first(i);
+    }
+
+    dsa::LinkedList<int> expected_list = {13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, ll_append_mix)
+{
+    dsa::LinkedList<int> list;
+    const int n = 5;
+    for (int i = 0; i < n; ++i) {
+        list.append_last(i);
+    }
+    for (int i = 0; i < n; ++i) {
+        list.append_first(i);
+    }
+    dsa::LinkedList<int> expected_list = {4, 3, 2, 1, 0, 0, 1, 2, 3, 4};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, ll_append)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    list.append(10, 3);
+    dsa::LinkedList<int> expected_list{0, 1, 2, 10, 3, 4, 5};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, ll_append_empty)
+{
+    dsa::LinkedList<int> list;
+    EXPECT_THROW(list.append(10, 0), std::out_of_range);
+}
+
+TEST(linked_list, ll_append_out_of_range)
+{
+    dsa::LinkedList<int> list;
+    EXPECT_THROW(list.append(10, 1), std::out_of_range);
 }
 
 TEST(linked_list, ll_size)

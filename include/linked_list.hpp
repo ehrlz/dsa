@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <memory>
+#include <stdexcept>
 
 namespace dsa
 {
@@ -109,9 +110,9 @@ class LinkedList
      * @param elem Element to append.
      *
      */
-    void append(T elem)
+    void append_last(T elem)
     {
-        Node* last_node = get_last_node();
+        Node* last_node = get_node(size() - 1);
         if (!last_node) {
             head_ = std::make_unique<Node>(elem, nullptr);
         } else {
@@ -119,10 +120,46 @@ class LinkedList
         }
     }
 
-    // TODO append first
+    /**
+     * Appends an element at the beginning of the list.
+     *
+     * @param elem Element to append.
+     *
+     */
+    void append_first(T elem)
+    {
+        std::unique_ptr<Node> new_n;
+        if (empty()) {
+            new_n = std::make_unique<Node>(elem, nullptr);
+        } else {
+            new_n = std::make_unique<Node>(elem, std::move(head_));
+        }
+        head_ = std::move(new_n);
+    }
+
+    /**
+     * Appends an element at a defined position.
+     *
+     * @param elem Element to append.
+     * @param index Position to include the element.
+     * Displaces every other element after it one position.
+     *
+     * @throws std::out_of_range Throwed if index is negative or bigger
+     * than the last position.
+     */
+    void append(T elem, std::size_t index)
+    {
+        if (empty() || index > size() - 1) {
+            throw std::out_of_range("Element to append out of bounds");
+        }
+        Node* node = get_node(index - 1);
+        auto new_node = std::make_unique<Node>(elem, std::move(node->next));
+        node->next = std::move(new_node);
+    }
 
     // TODO remove
 
+    // TODO rework to not iterate too much
     /**
      * Counts how many elements are in the list.
      *
@@ -178,7 +215,7 @@ class LinkedList
      */
     [[nodiscard]] T& back() const
     {
-        return get_last_node()->data;
+        return get_node(size() - 1)->data;
     }
 
     /**
@@ -242,14 +279,26 @@ class LinkedList
         std::unique_ptr<Node> next;
     };
 
-    Node* get_last_node() const
+    /**
+     * Obtains the a node of the list.
+     *
+     * @param index The position to obtain.
+     * @return The last node or nullptr is the list is empty.
+     *
+     * @throws std::out_of_range Throws if index is bigger
+     * than the last position.
+     */
+    Node* get_node(std::size_t index) const
     {
-        Node* curr_node = head_.get();
-        if (!curr_node) {
-            return curr_node;
+        if (empty()) {
+            return nullptr;
+        }
+        if (index > size() - 1) {
+            throw std::out_of_range("Getting node out of range");
         }
 
-        while (curr_node->next) {
+        Node* curr_node = head_.get();
+        for (std::size_t i = 0; i < index; ++i) {
             curr_node = curr_node->next.get();
         }
         return curr_node;
