@@ -18,7 +18,7 @@ PackConstructorInitializers: NextLineOnly
 BreakConstructorInitializers: BeforeComma
 
 # Includes
-IncludeBlocks: Regroup
+IncludeBlocks: Preserve
 
 # Braces insertion
 InsertBraces: true

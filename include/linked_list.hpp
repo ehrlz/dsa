@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <memory>
+#include <ostream>
 #include <stdexcept>
 
 namespace dsa
