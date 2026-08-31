@@ -20,7 +20,7 @@ class LinkedList
      * Constructs an empty list.
      */
     LinkedList()
-        : head_(nullptr)
+        : head_(nullptr), size_(0)
     {
     }
 
@@ -32,6 +32,7 @@ class LinkedList
      * @note O(n) cost. Copies each element of other list.
      */
     LinkedList(const LinkedList& other)
+        : head_(nullptr), size_(0)
     {
         if (!other.head_) {
             return;
@@ -45,6 +46,7 @@ class LinkedList
             dst = dst->next.get();
             src = src->next.get();
         }
+        size_ = other.size_;
     }
 
     /**
@@ -58,6 +60,7 @@ class LinkedList
     {
         LinkedList tmp(other);
         std::swap(head_, tmp.head_);
+        size_ = other.size_;
         return *this;
     }
 
@@ -68,7 +71,11 @@ class LinkedList
      *
      * @note O(1) cost. No copy, only pointers are managed.
      */
-    LinkedList(LinkedList&&) = default;
+    LinkedList(LinkedList&& other) noexcept
+        : head_(std::move(other.head_)), size_(other.size_)
+    {
+        other.size_ = 0;
+    }
 
     /**
      * Constructs a list by taking ownership of the asigned list's elements.
@@ -82,6 +89,8 @@ class LinkedList
         // comparing adresses
         if (this != &other) {
             head_ = std::move(other.head_);
+            size_ = other.size_;
+            other.size_ = 0;
         }
         return *this;
     }
@@ -92,7 +101,7 @@ class LinkedList
      * @param init Elements to insert, in order.
      */
     LinkedList(std::initializer_list<T> init)
-        : head_(nullptr)
+        : head_(nullptr), size_(0)
     {
         if (init.size() != 0) {
             head_ = std::make_unique<Node>(*init.begin(), nullptr);
@@ -101,6 +110,7 @@ class LinkedList
                 node->next = std::make_unique<Node>(init.begin()[i], nullptr);
                 node = node->next.get();
             }
+            size_ = init.size();
         }
     }
 
@@ -118,6 +128,7 @@ class LinkedList
         } else {
             last_node->next = std::make_unique<Node>(elem, nullptr);
         }
+        ++size_;
     }
 
     /**
@@ -135,6 +146,7 @@ class LinkedList
             new_n = std::make_unique<Node>(elem, std::move(head_));
         }
         head_ = std::move(new_n);
+        ++size_;
     }
 
     /**
@@ -155,32 +167,20 @@ class LinkedList
         Node* node = get_node(index - 1);
         auto new_node = std::make_unique<Node>(elem, std::move(node->next));
         node->next = std::move(new_node);
+        ++size_;
     }
 
     // TODO remove
 
-    // TODO rework to not iterate too much
     /**
-     * Counts how many elements are in the list.
+     * Access the element counter that is updated when an element is added
+     * or removed.
      *
      * @return The number of elements.
      */
     [[nodiscard]] std::size_t size() const
     {
-        std::size_t size = 0;
-
-        if (!head_) {
-            return size;
-        }
-
-        ++size;
-        Node* node = head_->next.get();
-        while (node) {
-            ++size;
-            node = node->next.get();
-        }
-
-        return size;
+        return size_;
     }
 
     /**
@@ -285,16 +285,12 @@ class LinkedList
      * @param index The position to obtain.
      * @return The last node or nullptr is the list is empty.
      *
-     * @throws std::out_of_range Throws if index is bigger
-     * than the last position.
+     * @note Doesn't validate the index argument.
      */
     Node* get_node(std::size_t index) const
     {
         if (empty()) {
             return nullptr;
-        }
-        if (index > size() - 1) {
-            throw std::out_of_range("Getting node out of range");
         }
 
         Node* curr_node = head_.get();
@@ -305,6 +301,7 @@ class LinkedList
     }
 
     std::unique_ptr<Node> head_;
+    std::size_t size_;
 };
 
 } // namespace dsa
