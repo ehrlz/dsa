@@ -186,6 +186,48 @@ TEST(linked_list, ll_append_out_of_range)
     EXPECT_THROW(list.append(10, 1), std::out_of_range);
 }
 
+TEST(linked_list, ll_clear)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    list.clear();
+    dsa::LinkedList<int> expected_list{};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, ll_remove)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    list.remove(2);
+    dsa::LinkedList<int> expected_list{0, 1, 3, 4, 5};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, ll_remove_empty)
+{
+    dsa::LinkedList<int> list{};
+    EXPECT_THROW(list.remove(0), std::out_of_range);
+}
+
+TEST(linked_list, ll_remove_out_of_bounds)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    EXPECT_THROW(list.remove(10), std::out_of_range);
+}
+
+TEST(linked_list, ll_pop)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    list.pop();
+    dsa::LinkedList<int> expected_list{1, 2, 3, 4, 5};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, ll_pop_empty)
+{
+    dsa::LinkedList<int> list{};
+    EXPECT_THROW(list.pop(), std::out_of_range);
+}
+
 TEST(linked_list, ll_size)
 {
     dsa::LinkedList<int> list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};

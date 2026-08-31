@@ -170,7 +170,55 @@ class LinkedList
         ++size_;
     }
 
-    // TODO remove
+    /**
+     * Removes all the elements.
+     */
+    void clear()
+    {
+        head_ = nullptr;
+        size_ = 0;
+    }
+
+    /**
+     * Removes the element in a position.
+     *
+     * @param index Position of the element to remove.
+     *
+     * @throws std::out_of_range Throwed if the list is empty or index
+     * is bigger than the last position.
+     */
+    void remove(std::size_t index)
+    {
+        if (empty() || index > size() - 1) {
+            throw std::out_of_range("Element to remove out of bounds");
+        }
+
+        if (index == 0) {
+            pop();
+        } else {
+            Node* prev_node = get_node(index - 1);
+            Node* node_to_delete = get_node(index);
+            prev_node->next = std::move(node_to_delete->next);
+            node_to_delete = nullptr;
+            --size_;
+        }
+    }
+
+    /**
+     * Removes the first element.
+     *
+     * @throws std::out_of_range Throwed if the list is empty.
+     */
+    void pop()
+    {
+        if (empty()) {
+            throw std::out_of_range("Element to remove out of bounds");
+        }
+        head_ = std::move(head_.get()->next);
+        --size_;
+    };
+
+    // TODO emplace
 
     /**
      * Access the element counter that is updated when an element is added
