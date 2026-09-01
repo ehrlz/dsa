@@ -205,6 +205,14 @@ TEST(linked_list, ll_remove)
     EXPECT_EQ(list, expected_list);
 }
 
+TEST(linked_list, ll_remove_first)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    list.remove(0);
+    dsa::LinkedList<int> expected_list{1, 2, 3, 4, 5};
+    EXPECT_EQ(list, expected_list);
+}
+
 TEST(linked_list, ll_remove_empty)
 {
     dsa::LinkedList<int> list{};
@@ -280,6 +288,54 @@ TEST(linked_list, emplace)
                                                   std::to_string(3),
                                                   std::to_string(4)};
     EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, access_operator)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    EXPECT_EQ(list[0], 0);
+}
+
+TEST(linked_list, access_operator_const)
+{
+    const dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    EXPECT_EQ(list[0], 0);
+}
+
+TEST(linked_list, at)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    EXPECT_EQ(list.at(0), 0);
+}
+
+TEST(linked_list, at_empty)
+{
+    dsa::LinkedList<int> list;
+    EXPECT_THROW(list.at(0), std::out_of_range);
+}
+
+TEST(linked_list, at_out_of_bounds)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    EXPECT_THROW(list.at(10), std::out_of_range);
+}
+
+TEST(linked_list, at_const)
+{
+    const dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    EXPECT_EQ(list.at(0), 0);
+}
+
+TEST(linked_list, at_empty_const)
+{
+    const dsa::LinkedList<int> list;
+    EXPECT_THROW(list.at(0), std::out_of_range);
+}
+
+TEST(linked_list, at_out_of_bounds_const)
+{
+    const dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    EXPECT_THROW(list.at(10), std::out_of_range);
 }
 
 TEST(linked_list, ll_size)

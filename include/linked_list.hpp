@@ -264,6 +264,62 @@ class LinkedList
     }
 
     /**
+     * Returns a mutable referente to the element in the selected position.
+     *
+     * @param index Position to access.
+     *
+     * @note Index correctness is not validated.
+     */
+    T& operator[](std::size_t index) noexcept
+    {
+        return get_node(index)->data;
+    }
+
+    /**
+     * Returns an inmutable referente to the element in the selected position.
+     *
+     * @param index Position to access.
+     *
+     * @note Index correctness is not validated.
+     */
+    const T& operator[](std::size_t index) const noexcept
+    {
+        return get_node(index)->data;
+    }
+
+    /**
+     * Returns a mutable reference to the element in the selected position.
+     *
+     * @param index Position to access.
+     *
+     * @throws std::out_of_range Throwed if the list is empty or the index
+     *                           is bigger than the last position.
+     */
+    T& at(std::size_t index)
+    {
+        if (empty() || index > size() - 1) {
+            throw std::out_of_range("Element to access is out of bounds");
+        }
+        return get_node(index)->data;
+    }
+
+    /**
+     * Returns an inmutable reference to the element in the selected position.
+     *
+     * @param index Position to access.
+     *
+     * @throws std::out_of_range Throwed if the list is empty or the index
+     *                           is bigger than the last position.
+     */
+    const T& at(std::size_t index) const
+    {
+        if (empty() || index > size() - 1) {
+            throw std::out_of_range("Element to access is out of bounds");
+        }
+        return get_node(index)->data;
+    }
+
+    /**
      * Access the element counter that is updated when an element is added
      * or removed.
      *
