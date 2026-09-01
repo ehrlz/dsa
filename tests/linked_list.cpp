@@ -172,7 +172,7 @@ TEST(linked_list, ll_append_mix)
 TEST(linked_list, ll_append)
 {
     dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
-    list.append(10, 3);
+    list.append(3, 10);
     dsa::LinkedList<int> expected_list{0, 1, 2, 10, 3, 4, 5};
     EXPECT_EQ(list, expected_list);
 }
@@ -229,6 +229,57 @@ TEST(linked_list, ll_pop_empty)
 {
     dsa::LinkedList<int> list{};
     EXPECT_THROW(list.pop(), std::out_of_range);
+}
+
+TEST(linked_list, emplace_last)
+{
+    dsa::LinkedList<std::string> list = {std::to_string(0),
+                                         std::to_string(1),
+                                         std::to_string(2),
+                                         std::to_string(3),
+                                         std::to_string(4)};
+    list.emplace_last("44");
+    dsa::LinkedList<std::string> expected_list = {std::to_string(0),
+                                                  std::to_string(1),
+                                                  std::to_string(2),
+                                                  std::to_string(3),
+                                                  std::to_string(4),
+                                                  std::to_string(44)};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, emplace_first)
+{
+    dsa::LinkedList<std::string> list = {std::to_string(0),
+                                         std::to_string(1),
+                                         std::to_string(2),
+                                         std::to_string(3),
+                                         std::to_string(4)};
+    list.emplace_first("44");
+    dsa::LinkedList<std::string> expected_list = {std::to_string(44),
+                                                  std::to_string(0),
+                                                  std::to_string(1),
+                                                  std::to_string(2),
+                                                  std::to_string(3),
+                                                  std::to_string(4)};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, emplace)
+{
+    dsa::LinkedList<std::string> list = {std::to_string(0),
+                                         std::to_string(1),
+                                         std::to_string(2),
+                                         std::to_string(3),
+                                         std::to_string(4)};
+    list.emplace(3, "44");
+    dsa::LinkedList<std::string> expected_list = {std::to_string(0),
+                                                  std::to_string(1),
+                                                  std::to_string(2),
+                                                  std::to_string(44),
+                                                  std::to_string(3),
+                                                  std::to_string(4)};
+    EXPECT_EQ(list, expected_list);
 }
 
 TEST(linked_list, ll_size)

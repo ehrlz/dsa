@@ -119,7 +119,6 @@ class LinkedList
      * Appends an element at the end of the list.
      *
      * @param elem Element to append.
-     *
      */
     void append_last(T elem)
     {
@@ -136,7 +135,6 @@ class LinkedList
      * Appends an element at the beginning of the list.
      *
      * @param elem Element to append.
-     *
      */
     void append_first(T elem)
     {
@@ -153,14 +151,14 @@ class LinkedList
     /**
      * Appends an element at a defined position.
      *
-     * @param elem Element to append.
      * @param index Position to include the element.
-     * Displaces every other element after it one position.
+     *              Displaces every other element after it one position.
+     * @param elem Element to append.
      *
      * @throws std::out_of_range Throwed if index is negative or bigger
-     * than the last position.
+     *                           than the last position.
      */
-    void append(T elem, std::size_t index)
+    void append(std::size_t index, T elem)
     {
         if (empty() || index > size() - 1) {
             throw std::out_of_range("Element to append out of bounds");
@@ -186,7 +184,7 @@ class LinkedList
      * @param index Position of the element to remove.
      *
      * @throws std::out_of_range Throwed if the list is empty or index
-     * is bigger than the last position.
+     *                           is bigger than the last position.
      */
     void remove(std::size_t index)
     {
@@ -217,9 +215,53 @@ class LinkedList
         }
         head_ = std::move(head_.get()->next);
         --size_;
-    };
+    }
 
-    // TODO emplace
+    /**
+     * Adds an element building it at the end of the list.
+     *
+     * @param args Arguments of the element to build.
+     */
+    template <typename... Args>
+    void emplace_last(Args&&... args)
+    {
+        Node* node = get_node(size() - 1);
+        node->next = std::make_unique<Node>(std::forward<Args>(args)..., nullptr);
+        ++size_;
+    }
+
+    /**
+     * Adds an element building it at the beginning of the list.
+     *
+     * @param args Arguments of the element to build.
+     */
+    template <typename... Args>
+    void emplace_first(Args&&... args)
+    {
+        head_ = std::make_unique<Node>(std::forward<Args>(args)..., std::move(head_));
+        ++size_;
+    }
+
+    /**
+     * Adds an element building it in a certain position.
+     *
+     * @param index Position where the element is included.
+     * @param args Arguments of the element to build.
+     *
+     * @throws std::out_of_range Throwed if the list is empty or the index
+     *                           is bigger than the last position.
+     */
+    template <typename... Args>
+    void emplace(std::size_t index, Args&&... args)
+    {
+        if (empty() || index > size() - 1) {
+            throw std::out_of_range("Element to empalce out of bounds");
+        }
+
+        Node* node = get_node(index - 1);
+        node->next = std::make_unique<Node>(std::forward<Args>(args)..., std::move(node->next));
+        ++size_;
+    }
 
     /**
      * Access the element counter that is updated when an element is added
