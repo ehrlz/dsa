@@ -11,8 +11,8 @@ namespace
 dsa::Vector<int> fill_vector(size_t n)
 {
     dsa::Vector<int> vector;
-    for (size_t i = 1uz; i <= n; ++i) {
-        vector.push_back(i);
+    for (std::size_t i{1}; i <= n; ++i) {
+        vector.push_back(static_cast<int>(i));
     }
     return vector;
 }
@@ -20,7 +20,7 @@ dsa::Vector<int> fill_vector(size_t n)
 dsa::Vector<std::unique_ptr<int>> fill_vector_heap_refs(size_t n)
 {
     dsa::Vector<std::unique_ptr<int>> vector;
-    for (size_t i = 1uz; i <= n; ++i) {
+    for (std::size_t i{1}; i <= n; ++i) {
         vector.push_back(std::make_unique<int>(i));
     }
     return vector;
@@ -31,7 +31,7 @@ void expect_unique_ptr_vector_eq(const dsa::Vector<std::unique_ptr<T>>& v,
                                  const dsa::Vector<std::unique_ptr<T>>& expected)
 {
     ASSERT_EQ(v.size(), expected.size());
-    for (size_t i = 0; i < v.size(); ++i) {
+    for (std::size_t i{0}; i < v.size(); ++i) {
         EXPECT_EQ(*v[i], *expected[i]);
     }
 }
@@ -44,7 +44,7 @@ template <typename T>
 void PrintTo(const Vector<T>& v, std::ostream* os)
 {
     *os << "[";
-    for (size_t i = 0; i < v.size(); ++i) {
+    for (std::size_t i{0}; i < v.size(); ++i) {
         if (i > 0) {
             *os << ", ";
         }
@@ -58,8 +58,8 @@ void PrintTo(const Vector<T>& v, std::ostream* os)
 TEST(vector, vector_constructor)
 {
     dsa::Vector<int> vector;
-    EXPECT_EQ(vector.size(), 0uz) << "vector is not empty at construction";
-    EXPECT_EQ(vector.capacity(), 0uz) << "vector capacity shall be 0 at construction";
+    EXPECT_EQ(vector.size(), 0) << "vector is not empty at construction";
+    EXPECT_EQ(vector.capacity(), 0) << "vector capacity shall be 0 at construction";
 }
 
 TEST(vector, vector_init_list_ctor)
@@ -159,9 +159,9 @@ TEST(vector, vector_move_operator)
 TEST(vector, vector_reserve)
 {
     dsa::Vector<int> vector;
-    auto resize_value{100uz};
+    std::size_t resize_value{100};
     vector.reserve(resize_value);
-    EXPECT_EQ(vector.size(), 0uz) << "vector resize changes size when it shouldn't";
+    EXPECT_EQ(vector.size(), 0) << "vector resize changes size when it shouldn't";
     EXPECT_EQ(vector.capacity(), resize_value)
         << "vector resize doesn't change the capacity correctly";
 }
@@ -171,17 +171,17 @@ TEST(vector, vector_push_back)
     dsa::Vector<int> vector;
     int element_to_insert = 1;
     vector.push_back(element_to_insert);
-    EXPECT_EQ(vector.size(), 1uz) << "vector push back doesn't increase the size";
+    EXPECT_EQ(vector.size(), 1) << "vector push back doesn't increase the size";
     EXPECT_EQ(vector.at(0), element_to_insert);
 }
 
 TEST(vector, vector_push_back_multiple_elements)
 {
     dsa::Vector<int> vector;
-    for (int idx{0}; idx < 40; ++idx) {
-        vector.push_back(idx);
+    for (std::size_t idx{0}; idx < 40; ++idx) {
+        vector.push_back(static_cast<int>(idx));
     }
-    for (auto idx{0uz}; idx < 40; ++idx) {
+    for (std::size_t idx{0}; idx < 40; ++idx) {
         EXPECT_EQ(vector.at(idx), idx) << "vector push back doesn't insert properly the elements";
     }
 }
@@ -189,7 +189,7 @@ TEST(vector, vector_push_back_multiple_elements)
 TEST(vector, vector_push_back_resize)
 {
     dsa::Vector<int> vector;
-    for (int idx{0uz}; idx < 75; ++idx) {
+    for (int idx{0}; idx < 75; ++idx) {
         vector.push_back(idx);
     }
     EXPECT_EQ(vector.size(), 75) << "vector push back doesn't increase the size properly";
@@ -218,7 +218,7 @@ TEST(vector, vector_at)
 TEST(vector, vector_at_out_of_bounds)
 {
     dsa::Vector<int> vector;
-    for (int idx{0uz}; idx < 75; ++idx) {
+    for (int idx{0}; idx < 75; ++idx) {
         vector.push_back(idx);
     }
     EXPECT_THROW(vector.at(76), std::out_of_range)
@@ -281,13 +281,13 @@ TEST(vector, vector_empty)
 TEST(vector, vector_front)
 {
     auto vector = fill_vector(2);
-    EXPECT_EQ(vector.front(), 1uz);
+    EXPECT_EQ(vector.front(), 1);
 }
 
 TEST(vector, vector_back)
 {
     auto vector = fill_vector(20);
-    EXPECT_EQ(vector.back(), 20uz);
+    EXPECT_EQ(vector.back(), 20);
 }
 
 TEST(vector, vector_data)

@@ -10,7 +10,7 @@
 TEST(linked_list, ll_ctor)
 {
     dsa::LinkedList<int> list;
-    EXPECT_EQ(list.size(), 0uz) << "list empty at construction";
+    EXPECT_EQ(list.size(), 0) << "list empty at construction";
 }
 
 TEST(linked_list, ll_copy_ctor)
