@@ -51,9 +51,9 @@ class LinkedList
     }
 
     /**
-     * Construcs a list by copying the content of the asigned LinkedList.
+     * Constructs a list by copying the content of other LinkedList.
      *
-     * @param other LinkedList asigned to copy.
+     * @param other LinkedList to copy.
      *
      * @note O(n) cost. Copies each element of other list.
      */
@@ -79,7 +79,7 @@ class LinkedList
     }
 
     /**
-     * Constructs a list by taking ownership of the asigned list's elements.
+     * Constructs a list by taking ownership of other's list's elements.
      *
      * @param other List to move from. Left in an invalid state.
      *
@@ -117,15 +117,16 @@ class LinkedList
 
     /**
      * Appends an element at the end of the list.
+     * If the list is empty, adds the first element.
      *
      * @param elem Element to append.
      */
     void append_last(T elem)
     {
-        Node* last_node = get_node(size() - 1);
-        if (!last_node) {
+        if (empty()) {
             head_ = std::make_unique<Node>(elem, nullptr);
         } else {
+            Node* last_node = get_node(size() - 1);
             last_node->next = std::make_unique<Node>(elem, nullptr);
         }
         ++size_;
@@ -155,7 +156,7 @@ class LinkedList
      *              Displaces every other element after it one position.
      * @param elem Element to append.
      *
-     * @throws std::out_of_range Throwed if index is negative or bigger
+     * @throws std::out_of_range Throws if index is negative or bigger
      *                           than the last position.
      */
     void append(std::size_t index, T elem)
@@ -163,10 +164,15 @@ class LinkedList
         if (empty() || index > size() - 1) {
             throw std::out_of_range("Element to append out of bounds");
         }
-        Node* node = get_node(index - 1);
-        auto new_node = std::make_unique<Node>(elem, std::move(node->next));
-        node->next = std::move(new_node);
-        ++size_;
+
+        if (index == 0) {
+            append_first(elem);
+        } else {
+            Node* node = get_node(index - 1);
+            auto new_node = std::make_unique<Node>(elem, std::move(node->next));
+            node->next = std::move(new_node);
+            ++size_;
+        }
     }
 
     /**
@@ -183,7 +189,7 @@ class LinkedList
      *
      * @param index Position of the element to remove.
      *
-     * @throws std::out_of_range Throwed if the list is empty or index
+     * @throws std::out_of_range Throws if the list is empty or index
      *                           is bigger than the last position.
      */
     void remove(std::size_t index)
@@ -206,7 +212,7 @@ class LinkedList
     /**
      * Removes the first element.
      *
-     * @throws std::out_of_range Throwed if the list is empty.
+     * @throws std::out_of_range Throws if the list is empty.
      */
     void pop()
     {
@@ -219,14 +225,20 @@ class LinkedList
 
     /**
      * Adds an element building it at the end of the list.
+     * If the list is empty, adds the first element.
      *
      * @param args Arguments of the element to build.
      */
     template <typename... Args>
     void emplace_last(Args&&... args)
     {
-        Node* node = get_node(size() - 1);
-        node->next = std::make_unique<Node>(std::forward<Args>(args)..., nullptr);
+        if (empty()) {
+            head_ = std::make_unique<Node>(std::forward<Args>(args)..., nullptr);
+        } else {
+
+            Node* last_node = get_node(size() - 1);
+            last_node->next = std::make_unique<Node>(std::forward<Args>(args)..., nullptr);
+        }
         ++size_;
     }
 
@@ -248,23 +260,27 @@ class LinkedList
      * @param index Position where the element is included.
      * @param args Arguments of the element to build.
      *
-     * @throws std::out_of_range Throwed if the list is empty or the index
+     * @throws std::out_of_range Throws if the list is empty or the index
      *                           is bigger than the last position.
      */
     template <typename... Args>
     void emplace(std::size_t index, Args&&... args)
     {
         if (empty() || index > size() - 1) {
-            throw std::out_of_range("Element to empalce out of bounds");
+            throw std::out_of_range("Element to emplace out of bounds");
         }
+        if (index == 0) {
+            emplace_first(args...);
+        } else {
 
-        Node* node = get_node(index - 1);
-        node->next = std::make_unique<Node>(std::forward<Args>(args)..., std::move(node->next));
-        ++size_;
+            Node* node = get_node(index - 1);
+            node->next = std::make_unique<Node>(std::forward<Args>(args)..., std::move(node->next));
+            ++size_;
+        }
     }
 
     /**
-     * Returns a mutable referente to the element in the selected position.
+     * Returns a mutable reference to the element in the selected position.
      *
      * @param index Position to access.
      *
@@ -276,7 +292,7 @@ class LinkedList
     }
 
     /**
-     * Returns an inmutable referente to the element in the selected position.
+     * Returns an immutable reference to the element in the selected position.
      *
      * @param index Position to access.
      *
@@ -292,7 +308,7 @@ class LinkedList
      *
      * @param index Position to access.
      *
-     * @throws std::out_of_range Throwed if the list is empty or the index
+     * @throws std::out_of_range Throws if the list is empty or the index
      *                           is bigger than the last position.
      */
     T& at(std::size_t index)
@@ -304,11 +320,11 @@ class LinkedList
     }
 
     /**
-     * Returns an inmutable reference to the element in the selected position.
+     * Returns an immutable reference to the element in the selected position.
      *
      * @param index Position to access.
      *
-     * @throws std::out_of_range Throwed if the list is empty or the index
+     * @throws std::out_of_range Throws if the list is empty or the index
      *                           is bigger than the last position.
      */
     const T& at(std::size_t index) const
@@ -341,26 +357,51 @@ class LinkedList
     }
 
     /**
-     * Returns the first element.
+     * Returns a mutable reference to the first element.
      *
-     * @return The element.
+     * @return The mutable reference to the element.
      *
      * @warning If empty() is true, the behavior is undefined.
      *          As std::forward_list::front().
      */
-    [[nodiscard]] T& front() const
+    [[nodiscard]] T& front()
     {
         return head_->data;
     }
 
     /**
-     * Returns the last element.
+     * Returns an immutable reference to the first element.
+     *
+     * @return The immutable reference.
+     *
+     * @warning If empty() is true, the behavior is undefined.
+     *          As std::forward_list::front().
+     */
+    [[nodiscard]] const T& front() const
+    {
+        return head_->data;
+    }
+
+    /**
+     * Returns a mutable reference to the last element.
+     * @return The mutable reference.
+     *
+     * @warning If empty() is true, the behavior is undefined.
+     *          As std::forward_list::back().
+     */
+    [[nodiscard]] T& back()
+    {
+        return get_node(size() - 1)->data;
+    }
+
+    /**
+     * Returns an immutable reference to the last element.
      * @return The element.
      *
      * @warning If empty() is true, the behavior is undefined.
      *          As std::forward_list::back().
      */
-    [[nodiscard]] T& back() const
+    [[nodiscard]] const T& back() const
     {
         return get_node(size() - 1)->data;
     }

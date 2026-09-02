@@ -177,16 +177,24 @@ TEST(linked_list, ll_append)
     EXPECT_EQ(list, expected_list);
 }
 
+TEST(linked_list, ll_append_head)
+{
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    list.append(0, -1);
+    dsa::LinkedList<int> expected_list{-1, 0, 1, 2, 3, 4, 5};
+    EXPECT_EQ(list, expected_list);
+}
+
 TEST(linked_list, ll_append_empty)
 {
     dsa::LinkedList<int> list;
-    EXPECT_THROW(list.append(10, 0), std::out_of_range);
+    EXPECT_THROW(list.append(0, 10), std::out_of_range);
 }
 
 TEST(linked_list, ll_append_out_of_range)
 {
-    dsa::LinkedList<int> list;
-    EXPECT_THROW(list.append(10, 1), std::out_of_range);
+    dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
+    EXPECT_THROW(list.append(44, 10), std::out_of_range);
 }
 
 TEST(linked_list, ll_clear)
@@ -256,6 +264,14 @@ TEST(linked_list, emplace_last)
     EXPECT_EQ(list, expected_list);
 }
 
+TEST(linked_list, emplace_last_empty)
+{
+    dsa::LinkedList<std::string> list;
+    list.emplace_last("44");
+    dsa::LinkedList<std::string> expected_list = {std::to_string(44)};
+    EXPECT_EQ(list, expected_list);
+}
+
 TEST(linked_list, emplace_first)
 {
     dsa::LinkedList<std::string> list = {std::to_string(0),
@@ -285,6 +301,23 @@ TEST(linked_list, emplace)
                                                   std::to_string(1),
                                                   std::to_string(2),
                                                   std::to_string(44),
+                                                  std::to_string(3),
+                                                  std::to_string(4)};
+    EXPECT_EQ(list, expected_list);
+}
+
+TEST(linked_list, emplace_head)
+{
+    dsa::LinkedList<std::string> list = {std::to_string(0),
+                                         std::to_string(1),
+                                         std::to_string(2),
+                                         std::to_string(3),
+                                         std::to_string(4)};
+    list.emplace(0, "44");
+    dsa::LinkedList<std::string> expected_list = {std::to_string(44),
+                                                  std::to_string(0),
+                                                  std::to_string(1),
+                                                  std::to_string(2),
                                                   std::to_string(3),
                                                   std::to_string(4)};
     EXPECT_EQ(list, expected_list);
@@ -356,9 +389,21 @@ TEST(linked_list, ll_front)
     EXPECT_EQ(list.front(), 0);
 }
 
+TEST(linked_list, ll_front_const)
+{
+    const dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    EXPECT_EQ(list.front(), 0);
+}
+
 TEST(linked_list, ll_back)
 {
     dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    EXPECT_EQ(list.back(), 13);
+}
+
+TEST(linked_list, ll_back_const)
+{
+    const dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
     EXPECT_EQ(list.back(), 13);
 }
 
