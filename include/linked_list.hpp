@@ -273,7 +273,7 @@ class LinkedList
             throw std::out_of_range("Element to emplace out of bounds");
         }
         if (index == 0) {
-            emplace_first(args...);
+            emplace_first(std::forward<Args>(args)...);
         } else {
 
             Node* node = get_node(index - 1);
@@ -467,7 +467,7 @@ class LinkedList
     };
 
     /**
-     * Returns a structure with all the needed info. to traverse the LinkedList.
+     * Returns a LinkedList iterator.
      * Placed at the first element of the list.
      *
      * @return Iterator at the beginning of the list.
@@ -478,12 +478,34 @@ class LinkedList
     }
 
     /**
-     * Returns a structure with all the needed info. to traverse the LinkedList.
-     * Placed at the last element of the list.
+     * Returns a LinkedList iterator.
+     * Defines the end of the list as a nullptr.
      *
      * @return Iterator at the end of the list.
      */
     Iterator end()
+    {
+        return Iterator(nullptr);
+    }
+
+    /**
+     * Returns a iterator from an immutable LinkedList.
+     * Placed at the first element of the list.
+     *
+     * @return Iterator at the beginning of the list.
+     */
+    Iterator begin() const
+    {
+        return Iterator(head_.get());
+    }
+
+    /**
+     * Returns a iterator from an immutable LinkedList.
+     * Defines the end of the list as a nullptr.
+     *
+     * @return Iterator at the end of the list.
+     */
+    Iterator end() const
     {
         return Iterator(nullptr);
     }
