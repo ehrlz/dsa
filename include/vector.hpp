@@ -17,12 +17,12 @@ class Vector
   public:
     // ctors and dtors
     Vector()
-        : data_(nullptr), size_(0uz), capacity_(0uz)
+        : data_(nullptr), size_(0), capacity_(0)
     {
     }
 
     Vector(std::initializer_list<T> init)
-        : data_(nullptr), size_(0uz), capacity_(init.size())
+        : data_(nullptr), size_(0), capacity_(init.size())
     {
         data_ = static_cast<T*>(::operator new(capacity_ * sizeof(T)));
 
@@ -54,7 +54,7 @@ class Vector
     }
 
     Vector(Vector&& other) noexcept
-        : data_(nullptr), size_(0uz), capacity_(0uz)
+        : data_(nullptr), size_(0), capacity_(0)
     {
         swap(other);
     }
@@ -94,7 +94,7 @@ class Vector
         if (size_ != other_vector.size_) {
             return false;
         }
-        for (auto idx{0uz}; idx < size_; ++idx) {
+        for (std::size_t idx{0}; idx < size_; ++idx) {
             if (data_[idx] != other_vector.data_[idx]) {
                 return false;
             }
@@ -322,12 +322,12 @@ class Vector
         T* new_data = static_cast<T*>(::operator new(new_capacity * sizeof(T)));
 
         // moves or copies each element from the old array
-        for (auto idx{0uz}; idx < size_; ++idx) {
+        for (std::size_t idx{0}; idx < size_; ++idx) {
             try {
                 new (new_data + idx) T(std::move_if_noexcept(data_[idx]));
             } catch (...) {
                 // cleans and rethrows
-                for (auto clean_idx{0uz}; clean_idx < idx; ++clean_idx) {
+                for (std::size_t clean_idx{0}; clean_idx < idx; ++clean_idx) {
                     new_data[clean_idx].~T();
                 }
                 ::operator delete(new_data);
@@ -336,7 +336,7 @@ class Vector
         }
 
         // cleans the old array
-        for (auto idx{0uz}; idx < size_; ++idx) {
+        for (std::size_t idx{0}; idx < size_; ++idx) {
             data_[idx].~T();
         }
         ::operator delete(data_);
