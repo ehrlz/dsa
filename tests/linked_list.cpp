@@ -323,6 +323,22 @@ TEST(linked_list, emplace_head)
     EXPECT_EQ(list, expected_list);
 }
 
+TEST(linked_list, emplace_empty)
+{
+    dsa::LinkedList<std::string> list;
+    EXPECT_THROW(list.emplace(0, "44"), std::out_of_range);
+}
+
+TEST(linked_list, emplace_out_of_bounds)
+{
+    dsa::LinkedList<std::string> list = {std::to_string(0),
+                                         std::to_string(1),
+                                         std::to_string(2),
+                                         std::to_string(3),
+                                         std::to_string(4)};
+    EXPECT_THROW(list.emplace(10, "44"), std::out_of_range);
+}
+
 TEST(linked_list, access_operator)
 {
     dsa::LinkedList<int> list{0, 1, 2, 3, 4, 5};
@@ -405,6 +421,29 @@ TEST(linked_list, ll_back_const)
 {
     const dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
     EXPECT_EQ(list.back(), 13);
+}
+
+TEST(linked_list, iterator_begin)
+{
+    dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    auto it = list.begin();
+    EXPECT_EQ(*it, 0);
+    EXPECT_EQ(*++it, 1);
+}
+
+TEST(linked_list, iterator_begin_equal)
+{
+    dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    auto it = list.begin();
+    auto it2 = list.begin();
+    EXPECT_EQ(it, it2);
+}
+
+TEST(linked_list, iterator_end)
+{
+    dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    auto it = list.end();
+    EXPECT_EQ(it, dsa::LinkedList<int>::Iterator(nullptr));
 }
 
 TEST(linked_list, ll_equal_operator_diff_size)

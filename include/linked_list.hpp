@@ -16,6 +16,9 @@ namespace dsa
 template <typename T>
 class LinkedList
 {
+  private:
+    struct Node;
+
   public:
     /**
      * Constructs an empty list.
@@ -404,6 +407,85 @@ class LinkedList
     [[nodiscard]] const T& back() const
     {
         return get_node(size() - 1)->data;
+    }
+
+    /**
+     * A forward iterator over the list's elements.
+     *
+     * @warning Iterators are invalidated when the node they point to
+     *          is removed from the list (e.g. via remove(), pop(), clear()).
+     */
+    class Iterator
+    {
+      public:
+        /**
+         * Constructs an iterator pointing at a given node.
+         *
+         * @param node Node to point at, or nullptr for the end iterator.
+         */
+        explicit Iterator(Node* node)
+            : node_(node)
+        {
+        }
+
+        /**
+         * Dereferences the iterator.
+         *
+         * @return Reference to the element the iterator currently points to.
+         *
+         * @warning Undefined behavior if the iterator is the end iterator.
+         */
+        T& operator*() const
+        {
+            return node_->data;
+        };
+
+        /**
+         * Advances the iterator to the next element.
+         *
+         * @return Reference to this iterator, after advancing.
+         */
+        Iterator& operator++()
+        {
+            node_ = node_->next.get();
+            return *this;
+        }
+
+        /**
+         * Compares two iterators for equality.
+         *
+         * @param other Iterator to compare against.
+         * @return true if the iterators point to the same node.
+         */
+        bool operator==(const Iterator& other) const
+        {
+            return node_ == other.node_;
+        }
+
+      private:
+        Node* node_;
+    };
+
+    /**
+     * Returns a structure with all the needed info. to traverse the LinkedList.
+     * Placed at the first element of the list.
+     *
+     * @return Iterator at the beginning of the list.
+     */
+    Iterator begin()
+    {
+        return Iterator(head_.get());
+    }
+
+    /**
+     * Returns a structure with all the needed info. to traverse the LinkedList.
+     * Placed at the last element of the list.
+     *
+     * @return Iterator at the end of the list.
+     */
+    Iterator end()
+    {
+        return Iterator(nullptr);
     }
 
     /**
