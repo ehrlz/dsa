@@ -446,6 +446,36 @@ TEST(linked_list, iterator_end)
     EXPECT_EQ(it, dsa::LinkedList<int>::Iterator(nullptr));
 }
 
+TEST(linked_list, iterator_begin_const)
+{
+    const dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    auto it = list.begin();
+    EXPECT_EQ(*it, 0);
+    EXPECT_EQ(*++it, 1);
+}
+
+TEST(linked_list, iterator_end_const)
+{
+    const dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    auto it = list.end();
+    EXPECT_EQ(it, dsa::LinkedList<int>::ConstIterator(nullptr));
+}
+
+TEST(linked_list, iterator_cbegin_const)
+{
+    dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    auto it = list.cbegin();
+    EXPECT_EQ(*it, 0);
+    EXPECT_EQ(*++it, 1);
+}
+
+TEST(linked_list, iterator_cend_const)
+{
+    dsa::LinkedList list = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    auto it = list.cend();
+    EXPECT_EQ(it, dsa::LinkedList<int>::ConstIterator(nullptr));
+}
+
 TEST(linked_list, ll_equal_operator_diff_size)
 {
     dsa::LinkedList<int> list = {1, 2, 3};

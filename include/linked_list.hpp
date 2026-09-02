@@ -20,6 +20,8 @@ class LinkedList
     struct Node;
 
   public:
+    class ConstIterator;
+
     /**
      * Constructs an empty list.
      */
@@ -463,6 +465,7 @@ class LinkedList
         }
 
       private:
+        friend class ConstIterator;
         Node* node_;
     };
 
@@ -489,23 +492,114 @@ class LinkedList
     }
 
     /**
-     * Returns a iterator from an immutable LinkedList.
+     * A read-only forward iterator over the list's elements.
+     *
+     * @warning Iterators are invalidated when the node they point to
+     *          is removed from the list (e.g. via remove(), pop(), clear()).
+     */
+    class ConstIterator
+    {
+      public:
+        /**
+         * Constructs a read-only iterator pointing at a given node.
+         *
+         * @param node Node to point at, or nullptr for the end iterator.
+         */
+        explicit ConstIterator(Node* node)
+            : node_(node)
+        {
+        }
+
+        /**
+         * Constructs a read-only iterator from an iterator.
+         *
+         * @param other Iterator used as a base.
+         */
+        ConstIterator(const Iterator& other)
+            : node_(other.node_)
+        {
+        }
+
+        /**
+         * Dereferences the iterator.
+         *
+         * @return Immutable reference to the element the iterator currently points to.
+         *
+         * @warning Undefined behavior if the iterator is the end iterator.
+         */
+        const T& operator*() const
+        {
+            return node_->data;
+        };
+
+        /**
+         * Advances the read-only iterator to the next element.
+         *
+         * @return Immutable reference to this iterator, after advancing.
+         */
+        ConstIterator& operator++()
+        {
+            node_ = node_->next.get();
+            return *this;
+        }
+
+        /**
+         * Compares two read-only iterators for equality.
+         *
+         * @param other Read-only iterator to compare against.
+         * @return true if the read-only iterators point to the same node.
+         */
+        bool operator==(const ConstIterator& other) const
+        {
+            return node_ == other.node_;
+        }
+
+      private:
+        const Node* node_;
+    };
+
+    /**
+     * Returns a read-only iterator from an immutable LinkedList.
      * Placed at the first element of the list.
      *
-     * @return Iterator at the beginning of the list.
+     * @return Read-only iterator at the beginning of the list.
      */
-    Iterator begin() const
+    ConstIterator begin() const
     {
-        return Iterator(head_.get());
+        return ConstIterator(head_.get());
     }
 
     /**
-     * Returns a iterator from an immutable LinkedList.
+     * Returns a read-only iterator from an immutable LinkedList.
      * Defines the end of the list as a nullptr.
      *
-     * @return Iterator at the end of the list.
+     * @return Read-only iterator at the end of the list.
      */
-    Iterator end() const
+    ConstIterator end() const
+    {
+        return ConstIterator(nullptr);
+    }
+
+    /**
+     * Returns a read-only iterator from a LinkedList, regardless of the
+     * object constness.
+     * Placed at the first element of the list.
+     *
+     * @return Read-only iterator at the beginning of the list.
+     */
+    ConstIterator cbegin() const
+    {
+        return ConstIterator(head_.get());
+    }
+
+    /**
+     * Returns a read-only iterator from a LinkedList, regardless of the
+     * object constness.
+     * Defines the end of the list as a nullptr.
+     *
+     * @return Read-only iterator at the end of the list.
+     */
+    ConstIterator cend() const
     {
         return Iterator(nullptr);
     }
